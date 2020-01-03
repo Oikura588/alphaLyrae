@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="EngineLogic">
+      <UniqueIdentifier>{801888d0-a440-4462-a199-086e13422be6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EngineLogic\Object">
+      <UniqueIdentifier>{eaea970a-f951-43f5-aa6c-8719e3ac02e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EngineLogic\Actor">
+      <UniqueIdentifier>{502b29da-7100-4b22-80d2-b29a8dba768a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EngineLogic\Components">
+      <UniqueIdentifier>{b8674dc1-59e1-4f9f-9942-15fcc0a6e6c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EngineCore">
+      <UniqueIdentifier>{fce8a397-31f0-4fc7-9d06-10805920faaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EngineCore\Windows">
+      <UniqueIdentifier>{61369c60-5721-4ae5-9b09-e7907704e9b2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Object.h">
+      <Filter>EngineLogic\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Actor.h">
+      <Filter>EngineLogic\Actor</Filter>
+    </ClInclude>
+    <ClInclude Include="ActorComponent.h">
+      <Filter>EngineLogic\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneComponent.h">
+      <Filter>EngineLogic\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="PrimitiveComponent.h">
+      <Filter>EngineLogic\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshComponent.h">
+      <Filter>EngineLogic\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="World.h">
+      <Filter>EngineLogic\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="D3DApp.h">
+      <Filter>EngineCore\Windows</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Object.cpp">
+      <Filter>EngineLogic\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Actor.cpp">
+      <Filter>EngineLogic\Actor</Filter>
+    </ClCompile>
+    <ClCompile Include="ActorComponent.cpp">
+      <Filter>EngineLogic\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneComponent.cpp">
+      <Filter>EngineLogic\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="PrimitiveComponent.cpp">
+      <Filter>EngineLogic\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshComponent.cpp">
+      <Filter>EngineLogic\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="World.cpp">
+      <Filter>EngineLogic\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="D3DApp.cpp">
+      <Filter>EngineCore\Windows</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
