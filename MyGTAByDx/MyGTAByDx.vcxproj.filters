@@ -90,5 +90,13 @@
     <ClCompile Include="GameApp.cpp">
       <Filter>EngineCore\Windows</Filter>
     </ClCompile>
+    <ClCompile Include="DXUtil.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="HLSL\Triangle_VS.hlsl" />
+    <FxCompile Include="HLSL\Triangle_PS.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HLSL\Triangle.hlsli" />
   </ItemGroup>
 </Project>
