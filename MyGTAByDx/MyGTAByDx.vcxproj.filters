@@ -19,6 +19,9 @@
     <Filter Include="EngineCore\Windows">
       <UniqueIdentifier>{61369c60-5721-4ae5-9b09-e7907704e9b2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="EngineCore\Tools">
+      <UniqueIdentifier>{575d55af-f960-4aea-9406-4ef6f7faea84}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Object.h">
@@ -43,6 +46,15 @@
       <Filter>EngineLogic\Object</Filter>
     </ClInclude>
     <ClInclude Include="D3DApp.h">
+      <Filter>EngineCore\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="DXTrace.h">
+      <Filter>EngineCore\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="DXUtil.h">
+      <Filter>EngineCore\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="GameApp.h">
       <Filter>EngineCore\Windows</Filter>
     </ClInclude>
   </ItemGroup>
@@ -70,6 +82,12 @@
     </ClCompile>
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="D3DApp.cpp">
+      <Filter>EngineCore\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="DXTrace.cpp">
+      <Filter>EngineCore\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="GameApp.cpp">
       <Filter>EngineCore\Windows</Filter>
     </ClCompile>
   </ItemGroup>

@@ -7,6 +7,8 @@
 #include<string>
 
 #pragma comment(lib,"d3d11.lib")
+#pragma comment(lib, "dxgi.lib")
+
 
 class D3DApp
 {
@@ -22,6 +24,10 @@ public:
 
 
 	virtual bool Init();				//初始化窗口和D3D部分
+	virtual void SetRenderPipeLine();	//设置管线资源，分辨率变化等需要调用
+	virtual void UpdateScene(float dt) = 0;   // 子类需要实现该方法，完成每一帧的更新
+	virtual void DrawScene() = 0;             // 子类需要实现该方法，完成每一帧的绘制
+
 
 	virtual LRESULT MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
