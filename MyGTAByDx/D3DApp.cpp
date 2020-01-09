@@ -72,7 +72,7 @@ int D3DApp::Run()
 			
 		}
 		else {
-			//UpdateScene();
+			UpdateScene(0.f);
 			DrawScene();
 
 		}

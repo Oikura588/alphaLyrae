@@ -11,6 +11,13 @@ struct VertexPosColor
 	static const D3D11_INPUT_ELEMENT_DESC inputDesc[2];
 };
 
+struct MVP
+{
+	DirectX::XMMATRIX world;
+	DirectX::XMMATRIX view;
+	DirectX::XMMATRIX proj;
+
+};
 
 
 class GameApp :
@@ -40,6 +47,12 @@ public:
 	//似乎不用
 	ComPtr<ID3D11InputLayout>		m_pPixelInputLayout;
 	ComPtr<ID3D11Buffer>			m_pPixelBuffer;
+
+	ComPtr<ID3D11Buffer>			m_pIndexBuffer;
+
+	//常量缓冲区
+	ComPtr<ID3D11Buffer>			m_pConstantBuffer;
+	MVP								m_MVPMatrix;
 
 };
 
