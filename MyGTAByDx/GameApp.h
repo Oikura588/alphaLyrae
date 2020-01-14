@@ -1,23 +1,43 @@
 #pragma once
 #include "D3DApp.h"
 #include <DirectXMath.h>
-
+#include "LightType.h"
+#include "Material.h"
+#include "Geometry.h"
 // 顶点. pos, color
-struct VertexPosColor
-{
-	DirectX::XMFLOAT3 pos;
-	DirectX::XMFLOAT4 color;
+//struct VertexPosColor
+//{
+//	DirectX::XMFLOAT3 pos;
+//	DirectX::XMFLOAT4 color;
+//
+//	static const D3D11_INPUT_ELEMENT_DESC inputDesc[2];
+//};
+//
+//struct MVP
+//{
+//	DirectX::XMMATRIX world;
+//	DirectX::XMMATRIX view;
+//	DirectX::XMMATRIX proj;
+//
+//};
 
-	static const D3D11_INPUT_ELEMENT_DESC inputDesc[2];
-};
 
-struct MVP
-{
+struct VSConstantBuffer {
 	DirectX::XMMATRIX world;
 	DirectX::XMMATRIX view;
 	DirectX::XMMATRIX proj;
+	DirectX::XMMATRIX worldInvTranspose;
 
 };
+
+struct PSConstantBuffer
+{
+	DirectionalLight dirLight;
+	Material material;
+	DirectX::XMFLOAT4 eyePos;
+
+};
+
 
 
 class GameApp :
@@ -44,6 +64,8 @@ public:
 	ComPtr<ID3D11InputLayout>		m_pVertexInputLayout;
 	ComPtr<ID3D11Buffer>			m_pVertexBuffer;
 	ComPtr<ID3D11PixelShader>		m_pPixelShader;
+
+	int								m_IndexCount;
 	//似乎不用
 	ComPtr<ID3D11InputLayout>		m_pPixelInputLayout;
 	ComPtr<ID3D11Buffer>			m_pPixelBuffer;
@@ -52,7 +74,18 @@ public:
 
 	//常量缓冲区
 	ComPtr<ID3D11Buffer>			m_pConstantBuffer;
-	MVP								m_MVPMatrix;
 
+	ComPtr<ID3D11Buffer> m_pConstantBuffers[2];     // 常量缓冲区
+
+	VSConstantBuffer				m_VSConstantBuffer;
+	PSConstantBuffer				m_PSConstantBuffer;
+
+	DirectionalLight				m_DirLight;
+
+	ComPtr<ID3D11RasterizerState> m_pRSWireframe;   // 光栅化状态: 线框模式
+	bool m_IsWireframeMode;                         // 当前是否为线框模式
+
+
+	bool UpdateMesh(const Geometry::MeshData<VertexPosNormalColor>& meshData);
 };
 

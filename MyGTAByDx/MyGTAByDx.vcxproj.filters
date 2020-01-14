@@ -22,6 +22,18 @@
     <Filter Include="EngineCore\Tools">
       <UniqueIdentifier>{575d55af-f960-4aea-9406-4ef6f7faea84}</UniqueIdentifier>
     </Filter>
+    <Filter Include="EngineCore\Geometry">
+      <UniqueIdentifier>{552cd8b9-3520-49b1-acc2-3c5c2037ac77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EngineCore\Light">
+      <UniqueIdentifier>{1f94b1d9-d770-49d4-9099-e56e389ea845}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EngineCore\Shader">
+      <UniqueIdentifier>{4230a35c-0315-4eb2-a82c-228a25583ab9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EngineCore\Material">
+      <UniqueIdentifier>{128ebb9b-d3a0-4f60-95fd-28d68fcb53a0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Object.h">
@@ -57,6 +69,21 @@
     <ClInclude Include="GameApp.h">
       <Filter>EngineCore\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="BasicShape.h">
+      <Filter>EngineCore\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry.h">
+      <Filter>EngineCore\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexTypes.h">
+      <Filter>EngineCore\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="LightType.h">
+      <Filter>EngineCore\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>EngineCore\Material</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Object.cpp">
@@ -91,12 +118,19 @@
       <Filter>EngineCore\Windows</Filter>
     </ClCompile>
     <ClCompile Include="DXUtil.cpp" />
+    <ClCompile Include="BasicShape.cpp">
+      <Filter>EngineCore\Geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Triangle_VS.hlsl" />
     <FxCompile Include="HLSL\Triangle_PS.hlsl" />
+    <FxCompile Include="HLSL\Light_VS.hlsl" />
+    <FxCompile Include="HLSL\Light_PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HLSL\Triangle.hlsli" />
+    <None Include="HLSL\LightHelper.hlsli" />
+    <None Include="HLSL\Light.hlsli" />
   </ItemGroup>
 </Project>
