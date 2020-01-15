@@ -62,15 +62,15 @@ public:
 
 	ComPtr<ID3D11VertexShader>		m_pVertexShader;
 	ComPtr<ID3D11InputLayout>		m_pVertexInputLayout;
-	ComPtr<ID3D11Buffer>			m_pVertexBuffer;
+	//ComPtr<ID3D11Buffer>			m_pVertexBuffer;
 	ComPtr<ID3D11PixelShader>		m_pPixelShader;
 
-	int								m_IndexCount;
+	//int								m_IndexCount;
 	//似乎不用
 	ComPtr<ID3D11InputLayout>		m_pPixelInputLayout;
 	ComPtr<ID3D11Buffer>			m_pPixelBuffer;
 
-	ComPtr<ID3D11Buffer>			m_pIndexBuffer;
+	//ComPtr<ID3D11Buffer>			m_pIndexBuffer;
 
 	//常量缓冲区
 	ComPtr<ID3D11Buffer>			m_pConstantBuffer;
@@ -85,12 +85,12 @@ public:
 	ComPtr<ID3D11RasterizerState> m_pRSWireframe;   // 光栅化状态: 线框模式
 	bool m_IsWireframeMode;                         // 当前是否为线框模式
 
-	template<class VertexType>
-	bool UpdateMesh(const Geometry::MeshData<VertexType>& meshData);
+	/*template<class VertexType>
+	bool UpdateMesh(const Geometry::MeshData<VertexType>& meshData);*/
 
-	ComPtr<ID3D11ShaderResourceView> m_pWoodCrate;			    // 木盒纹理
-	ComPtr<ID3D11SamplerState> m_pSamplerState;				    // 采样器状态
+	//ComPtr<ID3D11ShaderResourceView> m_pWoodCrate;			    // 木盒纹理
+	//ComPtr<ID3D11SamplerState> m_pSamplerState;				    // 采样器状态
 
-
+	class CubeShape* Cube;
 };
 

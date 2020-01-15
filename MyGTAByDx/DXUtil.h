@@ -6,7 +6,11 @@
 #include <d3d11_1.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
+#include <wrl/client.h>
+#include<string>
 
+#pragma comment(lib,"d3d11.lib")
+#pragma comment(lib, "dxgi.lib")
 
 #pragma comment(lib, "D3DCompiler.lib")
 
@@ -21,6 +25,11 @@ HRESULT CreateShaderFromFile(
 	LPCSTR entryPoint,
 	LPCSTR shaderModel,
 	ID3DBlob** ppBlobOut);
+
+
+//使用模板别名简化类型名
+template<class T>
+using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 
 #endif

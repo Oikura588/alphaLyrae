@@ -2,12 +2,8 @@
 	D3DApp.h: Base Class which has a Basic Windows
 =============================================================================*/
 #pragma once
-#include<d3d11_1.h>
-#include <wrl/client.h>
-#include<string>
+#include "DXUtil.h"
 
-#pragma comment(lib,"d3d11.lib")
-#pragma comment(lib, "dxgi.lib")
 
 
 class D3DApp
@@ -37,9 +33,7 @@ protected:
 	bool		m_bEnable4xMsaa;		//是否支持4倍多重采样
 	UINT		m_4xMsaaQuality;		//MSAA支持的质量等级
 
-	//使用模板别名简化类型名
-	template<class T>
-	using ComPtr = Microsoft::WRL::ComPtr<T>;
+
 
 	//D3D11
 	ComPtr<ID3D11Device>			m_pd3dDevice;			//D3D设备
