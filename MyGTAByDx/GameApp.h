@@ -85,7 +85,12 @@ public:
 	ComPtr<ID3D11RasterizerState> m_pRSWireframe;   // 光栅化状态: 线框模式
 	bool m_IsWireframeMode;                         // 当前是否为线框模式
 
+	template<class VertexType>
+	bool UpdateMesh(const Geometry::MeshData<VertexType>& meshData);
 
-	bool UpdateMesh(const Geometry::MeshData<VertexPosNormalColor>& meshData);
+	ComPtr<ID3D11ShaderResourceView> m_pWoodCrate;			    // 木盒纹理
+	ComPtr<ID3D11SamplerState> m_pSamplerState;				    // 采样器状态
+
+
 };
 

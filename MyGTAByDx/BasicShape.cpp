@@ -12,7 +12,7 @@ BasicShape::~BasicShape()
 
 CubeShape::CubeShape():BasicShape()
 {
-	//Data = Geometry::CreateCube();
+	Data = Geometry::CreateCube();
 }
 
 CubeShape::~CubeShape()

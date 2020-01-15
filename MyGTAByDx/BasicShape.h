@@ -4,7 +4,7 @@
 /************************************************************************/
 #include <vector>
 
-//#include "Geometry.h"
+#include "Geometry.h"
 
 class BasicShape
 {
@@ -19,8 +19,8 @@ class CubeShape :public BasicShape {
 public:
 	CubeShape();
 	~CubeShape();
-	//
-	//Geometry::MeshData<VertexPosNormalTex>	Data;
+	
+	Geometry::MeshData<VertexPosNormalTex>	Data;
 
 
 };

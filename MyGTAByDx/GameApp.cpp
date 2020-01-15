@@ -2,6 +2,7 @@
 #include "DXUtil.h"
 #include "DXTrace.h"
 #include "Geometry.h"
+#include "DDSTextureLoader.h"
 
 const D3D11_INPUT_ELEMENT_DESC VertexPosNormalTex::inputLayout[3] = {
 	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -90,16 +91,15 @@ bool GameApp::InitShader()
 	ComPtr<ID3DBlob> blob;
 	
 	//create VS
-	HR(CreateShaderFromFile(L"HLSL\\Light_VS.cso", L"HLSL\\Light_VS.hlsl", "main", "vs_5_0", blob.ReleaseAndGetAddressOf()));
+	HR(CreateShaderFromFile(L"HLSL\\Basic_VS.cso", L"HLSL\\Basic_VS.hlsl", "main", "vs_5_0", blob.ReleaseAndGetAddressOf()));
 	HR(m_pd3dDevice->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pVertexShader.GetAddressOf()));
 
 	//绑定InputLayout
-	HR(m_pd3dDevice->CreateInputLayout(VertexPosNormalColor::inputLayout, ARRAYSIZE(VertexPosNormalColor::inputLayout), blob->GetBufferPointer(), blob->GetBufferSize(),
+	HR(m_pd3dDevice->CreateInputLayout(VertexPosNormalTex::inputLayout, ARRAYSIZE(VertexPosNormalTex::inputLayout), blob->GetBufferPointer(), blob->GetBufferSize(),
 		m_pVertexInputLayout.GetAddressOf()));
 
 
-
-	HR(CreateShaderFromFile(L"HLSL\\Light_PS.cso", L"HLSL\\Light_PS.hlsl", "main", "ps_5_0", blob.ReleaseAndGetAddressOf()));
+	HR(CreateShaderFromFile(L"HLSL\\Basic_PS.cso", L"HLSL\\Basic_PS.hlsl", "main", "ps_5_0", blob.ReleaseAndGetAddressOf()));
 
 	HR(m_pd3dDevice->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pPixelShader.GetAddressOf()));
 
@@ -112,7 +112,7 @@ bool GameApp::InitResource()
 
 	//初始化网格模型
 
-	auto meshData = Geometry::CreateCube<VertexPosNormalColor>();
+	auto meshData = Geometry::CreateCube<VertexPosNormalTex>();
 
 	UpdateMesh(meshData);
 
@@ -127,6 +127,25 @@ bool GameApp::InitResource()
 	HR(m_pd3dDevice->CreateBuffer(&cbd, nullptr, m_pConstantBuffers[0].GetAddressOf()));
 	cbd.ByteWidth = sizeof(PSConstantBuffer);
 	HR(m_pd3dDevice->CreateBuffer(&cbd, nullptr, m_pConstantBuffers[1].GetAddressOf()));
+
+
+	// 初始化纹理
+
+	// 初始化木箱纹理
+	HR(CreateDDSTextureFromFile(m_pd3dDevice.Get(), L"Texture\\WoodCrate.dds", nullptr, m_pWoodCrate.GetAddressOf()));
+	
+
+	// 初始化采样器状态
+	D3D11_SAMPLER_DESC sampDesc;
+	ZeroMemory(&sampDesc, sizeof(sampDesc));
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	sampDesc.MinLOD = 0;
+	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	HR(m_pd3dDevice->CreateSamplerState(&sampDesc, m_pSamplerState.GetAddressOf()));
 
 
 	// ******************
@@ -172,11 +191,12 @@ bool GameApp::InitResource()
 	//
 	D3D11_RASTERIZER_DESC rasterizerDesc;
 	ZeroMemory(&rasterizerDesc, sizeof(rasterizerDesc));
-	rasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
+	rasterizerDesc.FillMode = D3D11_FILL_SOLID;
 	rasterizerDesc.CullMode = D3D11_CULL_NONE;
 	rasterizerDesc.FrontCounterClockwise = false;
 	rasterizerDesc.DepthClipEnable = true;
 	HR(m_pd3dDevice->CreateRasterizerState(&rasterizerDesc, m_pRSWireframe.GetAddressOf()));
+
 
 
 
@@ -197,16 +217,18 @@ bool GameApp::InitResource()
 	m_pd3dDeviceContext->PSSetConstantBuffers(1, 1, m_pConstantBuffers[1].GetAddressOf());
 
 
+
+	// 像素着色阶段设置好采样器
+	m_pd3dDeviceContext->PSSetSamplers(0, 1, m_pSamplerState.GetAddressOf());
+	m_pd3dDeviceContext->PSSetShaderResources(0, 1, m_pWoodCrate.GetAddressOf());
 	//PS阶段
 	m_pd3dDeviceContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0);
 
 
-
-
 	return true;
 }
-
-bool GameApp::UpdateMesh(const Geometry::MeshData<VertexPosNormalColor>& meshData)
+template<class VertexType>
+bool GameApp::UpdateMesh(const Geometry::MeshData<VertexType>& meshData)
 {
 	// 释放旧资源
 	m_pVertexBuffer.Reset();
@@ -216,7 +238,7 @@ bool GameApp::UpdateMesh(const Geometry::MeshData<VertexPosNormalColor>& meshDat
 	D3D11_BUFFER_DESC vbd;
 	ZeroMemory(&vbd, sizeof(vbd));
 	vbd.Usage = D3D11_USAGE_IMMUTABLE;
-	vbd.ByteWidth = (UINT)meshData.vertexVector.size() * sizeof(VertexPosNormalColor);
+	vbd.ByteWidth = (UINT)meshData.vertexVector.size() * sizeof(VertexType);
 	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vbd.CPUAccessFlags = 0;
 	// 新建顶点缓冲区
@@ -226,7 +248,7 @@ bool GameApp::UpdateMesh(const Geometry::MeshData<VertexPosNormalColor>& meshDat
 	HR(m_pd3dDevice->CreateBuffer(&vbd, &InitData, m_pVertexBuffer.GetAddressOf()));
 
 	// 输入装配阶段的顶点缓冲区设置
-	UINT stride = sizeof(VertexPosNormalColor); // 跨越字节数
+	UINT stride = sizeof(VertexType); // 跨越字节数
 	UINT offset = 0;                            // 起始偏移量
 
 	m_pd3dDeviceContext->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &stride, &offset);

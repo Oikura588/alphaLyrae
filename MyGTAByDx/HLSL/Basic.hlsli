@@ -1,5 +1,7 @@
-#include"LightHelper.hlsli"
+#include "LightHelper.hlsli"
 
+Texture2D g_Tex : register(t0);
+SamplerState g_SamLinear : register(s0);
 
 cbuffer VSConstantBuffer : register(b0)
 {
@@ -10,6 +12,7 @@ cbuffer VSConstantBuffer : register(b0)
 
 }
 
+
 cbuffer PSConstantBuffer : register(b1)
 {
 	DirectionalLight g_DirLight;
@@ -17,21 +20,22 @@ cbuffer PSConstantBuffer : register(b1)
 	float3 g_EyePos;
 	float g_Pad;
 	
-
-
+	float3 g_EyePosW;
+	float g_Pad2;
 }
 
-struct VertexIn
+
+struct VertexPosNormalTex
 {
 	float3 PosL : POSITION;
-	float3 Normal : NORMAL;
-	float4 Color : COLOR;
+	float3 NormalL : NORMAL;
+	float2 Tex : TEXCOORD;
 };
 
-struct VertexOut
+struct VertexPosHWNormalTex
 {
 	float4 PosH : SV_POSITION;
-	float3 PosW : POSITION; // 在世界中的位置
-	float3 NormalW : NORMAL; // 法向量在世界中的方向
-	float4 Color : COLOR;
+	float3 PosW : POSITION;		
+	float3 NormalW : NORMAL;	
+	float2 Tex : TEXCOORD;
 };

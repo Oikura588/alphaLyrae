@@ -84,6 +84,12 @@
     <ClInclude Include="Material.h">
       <Filter>EngineCore\Material</Filter>
     </ClInclude>
+    <ClInclude Include="DDSTextureLoader.h">
+      <Filter>EngineCore\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="WICTextureLoader.h">
+      <Filter>EngineCore\Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Object.cpp">
@@ -121,16 +127,25 @@
     <ClCompile Include="BasicShape.cpp">
       <Filter>EngineCore\Geometry</Filter>
     </ClCompile>
+    <ClCompile Include="DDSTextureLoader.cpp">
+      <Filter>EngineCore\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="WICTextureLoader.cpp">
+      <Filter>EngineCore\Tools</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Triangle_VS.hlsl" />
     <FxCompile Include="HLSL\Triangle_PS.hlsl" />
     <FxCompile Include="HLSL\Light_VS.hlsl" />
     <FxCompile Include="HLSL\Light_PS.hlsl" />
+    <FxCompile Include="HLSL\Basic_VS.hlsl" />
+    <FxCompile Include="HLSL\Basic_PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HLSL\Triangle.hlsli" />
     <None Include="HLSL\LightHelper.hlsli" />
     <None Include="HLSL\Light.hlsli" />
+    <None Include="HLSL\Basic.hlsli" />
   </ItemGroup>
 </Project>
