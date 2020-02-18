@@ -1,18 +1,15 @@
 #include "Actor.h"
 #include <iostream>
+
 int Actor::IDNum = 1;
 
 Actor::Actor()
-	: Children(0)
-	, Components(0)
-	, Owner(nullptr)
-	, RootComponent(nullptr)
 {
 	//每次调用构造函数，IDNum++
 	ID = IDNum;
 	IDNum++;
-	RootComponent = new SceneComponent;
 
+	RootComponent = new SceneComponent();
 
 }
 
@@ -20,61 +17,54 @@ Actor::~Actor()
 {
 }
 
-void Actor::SetOwner(Actor * NewOwner)
+
+void Actor::AddComponent(ActorComponent *InComponent)
 {
-	if (Owner == nullptr) {
-		Owner = NewOwner;
-	}
-	else if (NewOwner == nullptr) {
-		Owner = nullptr;
-	}
-	else if (NewOwner->ID!=Owner->ID)
-	{
-		Owner->RemoveChildren(ID);
-		Owner = NewOwner;
-		Owner->AddChildren(*this);
-	}
-
-	if (Owner)
-	{
-		//std::cout << Owner->ID<<"\n";
-
-	}
-}
-
-void Actor::AddChildren(Actor& ChildActor)
-{
-	Children.push_back(&ChildActor);
-}
-
-void Actor::RemoveChildren(int ChildrenActorID)
-{
-	auto ch = Children.begin();
-	std::cout << (*ch)->ID;
-	while (ch!=Children.end())
-	{
-		if ((*ch)->ID == ChildrenActorID) {
-			ch = Children.erase(ch);
-		}
-		else
-			++ch;
-	}
-}
-
-void Actor::AddComponent(ActorComponent & InComponent)
-{
-	Components.push_back(&InComponent);
+	RootComponent->AddChildren(InComponent);
 }
 
 void Actor::RemoveComponent(int ComponentID)
 {
-	auto com = Components.begin();
+		auto ch = RootComponent->Children.begin();
+		std::cout << (*ch)->ID;
+		while (ch!= RootComponent->Children.end())
+		{
+			if ((*ch)->ID == ComponentID) {
+				ch = RootComponent->Children.erase(ch);
+			}
+			else
+				++ch;
+	}
 	
 }
 
 void Actor::Tick(float DeltaSeconds)
 {
-	//Tick
+	//Tick，调用Components的Tick
+	//初始化Components中的其他组件
+	if (RootComponent)
+	{
+		RootComponent->Tick(DeltaSeconds);
+
+	}
+
+}
+
+void Actor::Render()
+{
+	//初始化Components中的其他组件
+	if (RootComponent)
+	{
+		for (auto com : RootComponent->Children)
+		{
+			PrimitiveComponent* tmp = dynamic_cast<PrimitiveComponent*>(com);
+			if (tmp)
+			{
+				tmp->Draw();
+			}
+		}
+
+	}
 }
 
 void Actor::PrintID()
@@ -84,25 +74,16 @@ void Actor::PrintID()
 
 void Actor::BeginPlay()
 {
-	PrintID();
+	//PrintID();
 
 	//初始化RootComponent
+	if (RootComponent==nullptr)
+	{
+		RootComponent = new SceneComponent();
+	}
 	RootComponent->BeginPlay();
 
 
-	//初始化Components中的其他组件
-	for (auto com : Components) {
-		std::cout << ID << "'s Components:";
-		com->BeginPlay();
-	}
-
-
-	//调用Children的BeginPlay
-	for (auto ch:Children)
-	{
-		std::cout << ID << "'s Children:";
-		ch->BeginPlay();
-	}
 
 
 }

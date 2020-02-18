@@ -1,6 +1,7 @@
 #pragma once
 #include"DXUtil.h"
 #include "LightType.h"
+#include "Material.h"
 
 struct VertexPosNormalTex
 {
@@ -31,11 +32,12 @@ struct ConstantBufferForScene {
 // 相机移动时会变化
 struct ConstantBufferForView {
 	DirectX::XMMATRIX view;
-	DirectX::XMMATRIX eyePos;
+	DirectX::XMFLOAT4 eyePos;
 };
 
 
 // 投影发生变化时
+// 相机的设置发生变化时会更新
 
 struct ConstantBufferForProj{
 	DirectX::XMMATRIX proj;
@@ -45,6 +47,6 @@ struct ConstantBufferForProj{
 // 灯光发生变化
 struct ConstantBufferForLit {
 	DirectionalLight dirLight;
-	int numDirLight;
-	DirectX::XMFLOAT3 pad;
+	Material material;
+
 };

@@ -34,6 +34,9 @@
     <Filter Include="EngineCore\Material">
       <UniqueIdentifier>{128ebb9b-d3a0-4f60-95fd-28d68fcb53a0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="EngineCore\Camera">
+      <UniqueIdentifier>{135d0327-bbfa-4790-bf76-5133d20eceb1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Object.h">
@@ -90,6 +93,9 @@
     <ClInclude Include="WICTextureLoader.h">
       <Filter>EngineCore\Tools</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>EngineCore\Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Object.cpp">
@@ -132,6 +138,9 @@
     </ClCompile>
     <ClCompile Include="WICTextureLoader.cpp">
       <Filter>EngineCore\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>EngineCore\Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

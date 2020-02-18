@@ -4,6 +4,7 @@
 #pragma once
 #include "Object.h"
 #include "SceneComponent.h"
+#include "MeshComponent.h"
 #include <vector>
 
 
@@ -12,26 +13,32 @@ public:
 	Actor();
     virtual ~Actor();
 
-	// Owner
-	Actor* Owner;
-	void SetOwner(Actor* NewOwner);
-	inline Actor* GetOwner() { return Owner; }
+	//// Owner
+	//Actor* Owner;
+	//void SetOwner(Actor* NewOwner);
+	//inline Actor* GetOwner() { return Owner; }
 
 
-	// Children
-    std::vector<Actor*> Children;
+	//// Children
+ //   std::vector<Actor*> Children;
 
-	void AddChildren(Actor& ChildActor);
-    void RemoveChildren(int ChildrenActorI);
+	//void AddChildren(Actor& ChildActor);
+ //   void RemoveChildren(int ChildrenActorI);
 
 	// 先用std::vector管理Component
-    std::vector<class ActorComponent*> Components;
+    //std::vector<class ActorComponent*> Components;
 
-	void AddComponent(ActorComponent& InComponent);
+	void AddComponent(ActorComponent* InComponent);
 	void RemoveComponent(int ComponentID);
 
 	// 管理Actor的Transform
 	SceneComponent* RootComponent;
+	//MeshComponent* RootComponent;
+
+	// 相对Owner的局部变化
+
+
+
 
 
 	//*******************ID相关***********************
@@ -51,5 +58,12 @@ public:
     virtual void Tick(float DeltaSeconds);
 
 
+	// 渲染相关
+
+	virtual void Render();
+
+
+
+	
 
 };

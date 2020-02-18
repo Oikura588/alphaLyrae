@@ -2,9 +2,13 @@
 	SceneComponent.h: Base Class which has Transform
 =============================================================================*/
 
+#pragma once
 
 #include "ActorComponent.h"
 #include <iostream>
+#include "DXUtil.h"
+
+
 
 // Vector3 3*float
 struct Vector3 {
@@ -21,6 +25,8 @@ struct Vector3 {
 // Transform
 struct Transform {
 	Vector3 Location;
+
+	//Roll Pitch Yaw
 	Vector3 Rotation;
 	Vector3 Scale;
 
@@ -35,6 +41,8 @@ struct Transform {
 		std::cout << "Scale:";
 		Scale.Print();
 	}
+
+
 };
 
 class SceneComponent : public ActorComponent {
@@ -42,14 +50,58 @@ public:
     SceneComponent();
     virtual ~SceneComponent();
 
-	// 每个SceneComponent有一个SceneComponent
-	Transform WorldTransform;
+	// 每个SceneComponent有一个WorldTransform，如果有父组件且父组件为SceneComponent的话，基于父组件的WorldTransform计算自己的WorldTransform
 
-	// 返回在世界坐标中的Transform
-	inline Transform& GetWorldTransform() { return WorldTransform; };
+	// 返回父场景组件orNULL
+	SceneComponent* GetFatherSceneComponent();
+	SceneComponent* FatherSceneComponent;
+	Transform WorldTransform;  
+	DirectX::XMMATRIX WorldMatrix;
+	// 每个SceneComponent有一个LocalTransform
+	Transform LocalTransform;
+	DirectX::XMMATRIX LocalMatrix;
+
+
+	//// 返回在世界坐标中的Transform
+	//inline Transform& GetWorldTransform() { 
+	//	 
+	//	//如果有父组件
+	//	if (GetFatherSceneComponent())
+	//	{
+	//		Transform Tmp;
+	//		Tmp.Location = FatherSceneComponent->WorldTransform.Location + LocalTransform.Location;
+
+	//	}
+	//	else {
+	//		return WorldTransform;
+	//	}
+
+	//
+	//
+	//};
+	// 根据Transform设置LocalMatrix
+	void SetLocalMatrix();
+
+
+	// 返回WorldMatrix
+	DirectX::XMMATRIX& GetWorldMatrix() {
+		//如果有父组件
+		if (GetFatherSceneComponent())
+		{
+			WorldMatrix = DirectX::XMMatrixMultiply(LocalMatrix, FatherSceneComponent->GetWorldMatrix());
+		}
+		else {
+			WorldMatrix = LocalMatrix;
+		}
+		return WorldMatrix;
+	}
+
 	inline void PrintTransform() { WorldTransform.Print(); };
 
 
-	virtual void BeginPlay() override;
+
+	//virtual void BeginPlay() override;
+	//virtual void Tick(float dt) override;
+
 
 };

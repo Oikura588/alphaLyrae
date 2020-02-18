@@ -6,12 +6,25 @@
 
 #pragma once
 #include "SceneComponent.h"
+#include "DXUtil.h"
+
+
 class PrimitiveComponent : public SceneComponent {
 public:
     PrimitiveComponent();
 
     virtual ~PrimitiveComponent();
 
+	// 游戏逻辑相关
+	virtual void BeginPlay() ;
+	virtual void Tick(float dt)		 ;
 
+	// 渲染相关
+	virtual void InitResource(ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3dDeviceContext)=0 ; //初始化渲染资源	
+	virtual void Draw();				//将资源绑定到pipeline
+	virtual void Update(float dt);				//更新资源
 
+protected:
+	ID3D11Device*						m_pd3dDevice;
+	ID3D11DeviceContext*				m_pd3dDeviceContext;
 };

@@ -3,8 +3,10 @@
 #include "DXTrace.h"
 #include "Geometry.h"
 #include "DDSTextureLoader.h"
-
 #include "BasicShape.h"
+#include "Actor.h"
+#include "MeshComponent.h"
+
 
 const D3D11_INPUT_ELEMENT_DESC VertexPosNormalTex::inputLayout[3] = {
 	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -19,8 +21,8 @@ const D3D11_INPUT_ELEMENT_DESC VertexPosNormalColor::inputLayout[3] = {
 };
 
 GameApp::GameApp(HINSTANCE hInstance)
-	:D3DApp(hInstance),m_VSConstantBuffer(),m_PSConstantBuffer()
-	,Cube(nullptr)
+	:D3DApp(hInstance),m_ConstantBufferForLit(), m_ConstantBufferForProj(),m_ConstantBufferForScene(),m_ConstantBufferForView()
+	//,Cube(nullptr)
 {
 	m_MainWindowCaption = L"GameApp";
 }
@@ -44,6 +46,10 @@ bool GameApp::Init()
 	{
 		return false;
 	}
+	if (!InitPipeline())
+	{
+		return false;
+	}
 	return true;
 }
 
@@ -54,28 +60,9 @@ void GameApp::SetRenderPipeLine()
 
 void GameApp::UpdateScene(float dt)
 {
-	using namespace DirectX;
-	Cube->Update(dt);
 
-	m_VSConstantBuffer.world = Cube->m_WorldMatrix;
-
-	static float phi = 0.0f, theta = 0.0f;
-	phi += 0.0001f, theta += 0.00015f;
-	XMMATRIX W = XMMatrixRotationX(phi) * XMMatrixRotationY(theta);
-	m_VSConstantBuffer.worldInvTranspose = XMMatrixInverse(nullptr, W); // 两次转置可以抵消
-
-	// ...
-
-	// 更新常量缓冲区，让立方体转起来
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	HR(m_pd3dDeviceContext->Map(m_pConstantBuffers[0].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
-	memcpy_s(mappedData.pData, sizeof(VSConstantBuffer), &m_VSConstantBuffer, sizeof(VSConstantBuffer));
-	m_pd3dDeviceContext->Unmap(m_pConstantBuffers[0].Get(), 0);
-
-	HR(m_pd3dDeviceContext->Map(m_pConstantBuffers[1].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
-	memcpy_s(mappedData.pData, sizeof(PSConstantBuffer), &m_PSConstantBuffer, sizeof(PSConstantBuffer));
-	m_pd3dDeviceContext->Unmap(m_pConstantBuffers[1].Get(), 0);
-
+	Car->Tick(dt);
+	
 }
 
 void GameApp::DrawScene()
@@ -87,7 +74,8 @@ void GameApp::DrawScene()
 	m_pd3dDeviceContext->ClearRenderTargetView(m_pRenderTargetView.Get(), black);
 	m_pd3dDeviceContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-	m_pd3dDeviceContext->DrawIndexed(Cube->m_IndexCount, 0,0);
+	//m_pd3dDeviceContext->DrawIndexed(Cube->m_IndexCount, 0,0);
+	Car->Render();
 	HR(m_pSwapChain->Present(0, 0));
 
 }
@@ -116,83 +104,93 @@ bool GameApp::InitResource()
 {
 	using namespace DirectX;
 
-	//初始化网格模型
-
-	//auto meshData = Geometry::CreateCube<VertexPosNormalTex>();
-
-	//UpdateMesh(meshData);
-	Cube = new CubeShape();
-	Cube->InitResource(m_pd3dDevice.Get(), m_pd3dDeviceContext.Get());
-
-
-
-	//设置常量缓冲区
-	D3D11_BUFFER_DESC cbd;
-	ZeroMemory(&cbd, sizeof(cbd));
-	cbd.Usage = D3D11_USAGE_DYNAMIC;
-	cbd.ByteWidth = sizeof(VSConstantBuffer);
-	cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	// 新建用于VS和PS的常量缓冲区
-	HR(m_pd3dDevice->CreateBuffer(&cbd, nullptr, m_pConstantBuffers[0].GetAddressOf()));
-	cbd.ByteWidth = sizeof(PSConstantBuffer);
-	HR(m_pd3dDevice->CreateBuffer(&cbd, nullptr, m_pConstantBuffers[1].GetAddressOf()));
-
-
-	// 初始化纹理
-
+	//初始化小车
 	
-	// 初始化木箱纹理
-	//HR(CreateDDSTextureFromFile(m_pd3dDevice.Get(), L"Texture\\WoodCrate.dds", nullptr, m_pWoodCrate.GetAddressOf()));
-	
+	Car = new Actor();
+	MeshComponent* CarBody = new MeshComponent();
+	CarBody->LocalMatrix = XMMatrixTranslation(2.f, 0.f, 0.f);
+	MeshComponent* CarBody2 = new MeshComponent();
+	CarBody2->LocalMatrix = XMMatrixTranslation(-2.f, 0.f, 0.f);
+	//SceneComponent* CarBody = new SceneComponent();
 
-	// 初始化采样器状态
-	//D3D11_SAMPLER_DESC sampDesc;
-	//ZeroMemory(&sampDesc, sizeof(sampDesc));
-	//sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	//sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	//sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	//sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	//sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-	//sampDesc.MinLOD = 0;
-	//sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
-	//HR(m_pd3dDevice->CreateSamplerState(&sampDesc, m_pSamplerState.GetAddressOf()));
+	Car->AddComponent(CarBody);
+	Car->AddComponent(CarBody2);
+	CarBody->InitResource(m_pd3dDevice.Get(), m_pd3dDeviceContext.Get());
+	CarBody2->InitResource(m_pd3dDevice.Get(), m_pd3dDeviceContext.Get());
 
 
-	// ******************
 
-	m_DirLight.Ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-	m_DirLight.Diffuse = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
-	m_DirLight.Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	m_DirLight.Direction = XMFLOAT3(-0.577f, -0.577f, 0.577f);
 
-	// 初始化用于VS的常量缓冲区的值
-	m_VSConstantBuffer.world = Cube->m_WorldMatrix;
-	m_VSConstantBuffer.view = XMMatrixTranspose(XMMatrixLookAtLH(
+	// 相机设置的CB
+
+	m_ConstantBufferForView.eyePos = XMFLOAT4(0.F, 0.F, -5.F, 0.F);
+	m_ConstantBufferForView.view=XMMatrixTranspose(XMMatrixLookAtLH(
 		XMVectorSet(0.0f, 0.0f, -5.0f, 0.0f),
 		XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
 		XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
 	));
-	m_VSConstantBuffer.proj = XMMatrixTranspose(XMMatrixPerspectiveFovLH(XM_PIDIV2, AspectRatio(), 1.0f, 1000.0f));
-	m_VSConstantBuffer.worldInvTranspose = XMMatrixIdentity();
-
-	// 初始化用于PS的常量缓冲区的值
-	m_PSConstantBuffer.material.Ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	m_PSConstantBuffer.material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	m_PSConstantBuffer.material.Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 5.0f);
-
-	// 使用默认平行光
-
-	m_PSConstantBuffer.dirLight = m_DirLight;
-	m_PSConstantBuffer.eyePos = XMFLOAT4(0.0f, 0.0f, -5.0f, 0.0f);
+	m_ConstantBufferForProj.proj= XMMatrixTranspose(XMMatrixPerspectiveFovLH(XM_PIDIV2, AspectRatio(), 1.0f, 1000.0f));
 
 
-	// 更新PS常量缓冲区资源
+
+	// 灯光与材质设置的CB
+	m_DirLight.Ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	m_DirLight.Diffuse = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
+	m_DirLight.Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	m_DirLight.Direction = XMFLOAT3(0.5f, 0.5f, 0.5f);
+
+	m_ConstantBufferForLit.material.Ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	m_ConstantBufferForLit.material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	m_ConstantBufferForLit.material.Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 5.0f);
+	m_ConstantBufferForLit.dirLight = m_DirLight;
+
+
+
+
+	return true;
+}
+
+bool GameApp::InitPipeline()
+{
+	//设置常量缓冲区
+	D3D11_BUFFER_DESC cbd;
+	ZeroMemory(&cbd, sizeof(cbd));
+	cbd.Usage = D3D11_USAGE_DYNAMIC;
+	cbd.ByteWidth = sizeof(m_ConstantBufferForScene);
+	cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	// 新建用于VS和PS的常量缓冲区
+	HR(m_pd3dDevice->CreateBuffer(&cbd, nullptr, m_pConstantBuffers[0].GetAddressOf()));
+	cbd.ByteWidth = sizeof(m_ConstantBufferForView);
+	HR(m_pd3dDevice->CreateBuffer(&cbd, nullptr, m_pConstantBuffers[1].GetAddressOf()));
+	cbd.ByteWidth = sizeof(m_ConstantBufferForProj);
+	HR(m_pd3dDevice->CreateBuffer(&cbd, nullptr, m_pConstantBuffers[2].GetAddressOf()));
+	cbd.ByteWidth = sizeof(m_ConstantBufferForLit);
+	HR(m_pd3dDevice->CreateBuffer(&cbd, nullptr, m_pConstantBuffers[3].GetAddressOf()));
+
+
+
+	// 将不改变的绑定到pipeline
+	// 相机
 	D3D11_MAPPED_SUBRESOURCE mappedData;
+	HR(m_pd3dDeviceContext->Map(m_pConstantBuffers[0].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
+	memcpy_s(mappedData.pData, sizeof(ConstantBufferForScene), &m_ConstantBufferForScene, sizeof(ConstantBufferForScene));
+	m_pd3dDeviceContext->Unmap(m_pConstantBuffers[0].Get(), 0);
+
+
 	HR(m_pd3dDeviceContext->Map(m_pConstantBuffers[1].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
-	memcpy_s(mappedData.pData, sizeof(PSConstantBuffer), &m_PSConstantBuffer, sizeof(PSConstantBuffer));
+	memcpy_s(mappedData.pData, sizeof(ConstantBufferForView), &m_ConstantBufferForView, sizeof(ConstantBufferForView));
 	m_pd3dDeviceContext->Unmap(m_pConstantBuffers[1].Get(), 0);
 
+	HR(m_pd3dDeviceContext->Map(m_pConstantBuffers[2].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
+	memcpy_s(mappedData.pData, sizeof(ConstantBufferForProj), &m_ConstantBufferForProj, sizeof(ConstantBufferForProj));
+	m_pd3dDeviceContext->Unmap(m_pConstantBuffers[2].Get(), 0);
+
+
+	// 灯光
+	HR(m_pd3dDeviceContext->Map(m_pConstantBuffers[3].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
+	memcpy_s(mappedData.pData, sizeof(ConstantBufferForLit), &m_ConstantBufferForLit, sizeof(ConstantBufferForLit));
+	m_pd3dDeviceContext->Unmap(m_pConstantBuffers[3].Get(), 0);
 
 
 	// 初始化光栅化状态
@@ -221,59 +219,17 @@ bool GameApp::InitResource()
 	m_pd3dDeviceContext->VSSetConstantBuffers(0, 1, m_pConstantBuffers[0].GetAddressOf());
 
 	//b1
-	m_pd3dDeviceContext->PSSetConstantBuffers(1, 1, m_pConstantBuffers[1].GetAddressOf());
+	m_pd3dDeviceContext->VSSetConstantBuffers(1, 1, m_pConstantBuffers[1].GetAddressOf());
+	m_pd3dDeviceContext->VSSetConstantBuffers(2, 1, m_pConstantBuffers[2].GetAddressOf());
+
+	m_pd3dDeviceContext->PSSetConstantBuffers(3, 1, m_pConstantBuffers[3].GetAddressOf());
 
 
 
-	// 像素着色阶段设置好采样器
-	//m_pd3dDeviceContext->PSSetSamplers(0, 1, m_pSamplerState.GetAddressOf());
-	//m_pd3dDeviceContext->PSSetShaderResources(0, 1, m_pWoodCrate.GetAddressOf());
 	//PS阶段
 	m_pd3dDeviceContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0);
 
 
 	return true;
 }
-//template<class VertexType>
-//bool GameApp::UpdateMesh(const Geometry::MeshData<VertexType>& meshData)
-//{
-//	// 释放旧资源
-//	m_pVertexBuffer.Reset();
-//	m_pIndexBuffer.Reset();
-//
-//	// 设置顶点缓冲区描述
-//	D3D11_BUFFER_DESC vbd;
-//	ZeroMemory(&vbd, sizeof(vbd));
-//	vbd.Usage = D3D11_USAGE_IMMUTABLE;
-//	vbd.ByteWidth = (UINT)meshData.vertexVector.size() * sizeof(VertexType);
-//	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-//	vbd.CPUAccessFlags = 0;
-//	// 新建顶点缓冲区
-//	D3D11_SUBRESOURCE_DATA InitData;
-//	ZeroMemory(&InitData, sizeof(InitData));
-//	InitData.pSysMem = meshData.vertexVector.data();
-//	HR(m_pd3dDevice->CreateBuffer(&vbd, &InitData, m_pVertexBuffer.GetAddressOf()));
-//
-//	// 输入装配阶段的顶点缓冲区设置
-//	UINT stride = sizeof(VertexType); // 跨越字节数
-//	UINT offset = 0;                            // 起始偏移量
-//
-//	m_pd3dDeviceContext->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &stride, &offset);
-//	// 设置索引缓冲区描述
-//	m_IndexCount = (UINT)meshData.indexVector.size();
-//	D3D11_BUFFER_DESC ibd;
-//	ZeroMemory(&ibd, sizeof(ibd));
-//	ibd.Usage = D3D11_USAGE_IMMUTABLE;
-//	ibd.ByteWidth = m_IndexCount * sizeof(WORD);
-//	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-//	ibd.CPUAccessFlags = 0;
-//	// 新建索引缓冲区
-//	InitData.pSysMem = meshData.indexVector.data();
-//	HR(m_pd3dDevice->CreateBuffer(&ibd, &InitData, m_pIndexBuffer.GetAddressOf()));
-//	// 输入装配阶段的索引缓冲区设置
-//	m_pd3dDeviceContext->IASetIndexBuffer(m_pIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
-//
-//	return true;
-//
-//}
-//
+

@@ -1,7 +1,7 @@
 #include "BasicShape.h"
 #include "DDSTextureLoader.h"
 #include "DXTrace.h"
-
+#include "VertexTypes.h"
 
 BasicShape::BasicShape()
 	:m_pDefaultTexture(nullptr)
@@ -77,9 +77,6 @@ CubeShape::~CubeShape()
 void CubeShape::InitResource(ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3dDeviceContext)
 {
 	using namespace DirectX;
-
-
-
 	m_pd3dDevice = pd3dDevice;
 	m_pd3dDeviceContext = pd3dDeviceContext;
 	//设置网格
@@ -111,12 +108,37 @@ void CubeShape::InitResource(ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3d
 	pd3dDeviceContext->PSSetShaderResources(0, 1, m_pDefaultTexture.GetAddressOf());
 }
 
-void CubeShape::Update(float dt)
+void CubeShape::Draw()
 {
+		/*
 	using namespace DirectX;
 	static float phi = 0.0f, theta = 0.0f;
 	phi += 0.0001f, theta += 0.00015f;
 	XMMATRIX W = XMMatrixRotationX(phi) * XMMatrixRotationY(theta);
-	m_WorldMatrix = XMMatrixTranspose(W);
+	m_WorldMatrix = XMMatrixTranspose(W);*/
 
+	using namespace DirectX;
+	//获取已经绑定到管线上的常量缓冲区并进行更改
+	ComPtr<ID3D11Buffer> cBuffer = nullptr;
+	m_pd3dDeviceContext->VSGetConstantBuffers(0, 1, &cBuffer);
+	ConstantBufferForScene cBForScene;
+
+	cBForScene.world = m_WorldMatrix;
+	cBForScene.worldInvTranspose = XMMatrixInverse(nullptr, cBForScene.world); 
+
+	//// ...
+
+	// 更新常量缓冲区
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	HR(m_pd3dDeviceContext->Map(cBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
+	memcpy_s(mappedData.pData, sizeof(ConstantBufferForScene), &cBForScene, sizeof(ConstantBufferForScene));
+	m_pd3dDeviceContext->Unmap(cBuffer.Get(), 0);
+
+	m_pd3dDeviceContext->DrawIndexed(m_IndexCount, 0, 0);
+
+}
+
+void CubeShape::Update(float dt)
+{
+	// 在Mesh组件中更新
 }

@@ -21,22 +21,22 @@
 //
 //};
 
-
-struct VSConstantBuffer {
-	DirectX::XMMATRIX world;
-	DirectX::XMMATRIX view;
-	DirectX::XMMATRIX proj;
-	DirectX::XMMATRIX worldInvTranspose;
-
-};
-
-struct PSConstantBuffer
-{
-	DirectionalLight dirLight;
-	Material material;
-	DirectX::XMFLOAT4 eyePos;
-
-};
+//
+//struct VSConstantBuffer {
+//	DirectX::XMMATRIX world;
+//	DirectX::XMMATRIX view;
+//	DirectX::XMMATRIX proj;
+//	DirectX::XMMATRIX worldInvTranspose;
+//
+//};
+//
+//struct PSConstantBuffer
+//{
+//	DirectionalLight dirLight;
+//	Material material;
+//	DirectX::XMFLOAT4 eyePos;
+//
+//};
 
 
 
@@ -60,6 +60,10 @@ public:
 	bool InitResource();
 
 
+	//初始化管线
+	bool InitPipeline();
+
+
 	ComPtr<ID3D11VertexShader>		m_pVertexShader;
 	ComPtr<ID3D11InputLayout>		m_pVertexInputLayout;
 	//ComPtr<ID3D11Buffer>			m_pVertexBuffer;
@@ -75,11 +79,18 @@ public:
 	//常量缓冲区
 	ComPtr<ID3D11Buffer>			m_pConstantBuffer;
 
-	ComPtr<ID3D11Buffer> m_pConstantBuffers[2];     // 常量缓冲区
+	//ComPtr<ID3D11Buffer> m_pConstantBuffers[2];		// 常量缓冲区
 
-	VSConstantBuffer				m_VSConstantBuffer;
-	PSConstantBuffer				m_PSConstantBuffer;
+	//VSConstantBuffer				m_VSConstantBuffer;
+	//PSConstantBuffer				m_PSConstantBuffer;
 
+	//分块的常量缓冲区
+
+	ComPtr<ID3D11Buffer> m_pConstantBuffers[4];						// 常量缓冲区
+	ConstantBufferForScene			m_ConstantBufferForScene;		//每个物体管理
+	ConstantBufferForView			m_ConstantBufferForView;		//相机管理
+	ConstantBufferForProj			m_ConstantBufferForProj;		//相机管理
+	ConstantBufferForLit			m_ConstantBufferForLit;			//GameApp管理(默认灯光不发生变化
 	DirectionalLight				m_DirLight;
 
 	ComPtr<ID3D11RasterizerState> m_pRSWireframe;   // 光栅化状态: 线框模式
@@ -91,6 +102,8 @@ public:
 	//ComPtr<ID3D11ShaderResourceView> m_pWoodCrate;			    // 木盒纹理
 	//ComPtr<ID3D11SamplerState> m_pSamplerState;				    // 采样器状态
 
-	class CubeShape* Cube;
+	//class CubeShape* Cube;
+
+	class Actor* Car;												// 车辆Actor
 };
 
