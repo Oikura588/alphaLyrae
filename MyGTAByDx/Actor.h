@@ -13,33 +13,12 @@ public:
 	Actor();
     virtual ~Actor();
 
-	//// Owner
-	//Actor* Owner;
-	//void SetOwner(Actor* NewOwner);
-	//inline Actor* GetOwner() { return Owner; }
-
-
-	//// Children
- //   std::vector<Actor*> Children;
-
-	//void AddChildren(Actor& ChildActor);
- //   void RemoveChildren(int ChildrenActorI);
-
-	// 先用std::vector管理Component
-    //std::vector<class ActorComponent*> Components;
 
 	void AddComponent(ActorComponent* InComponent);
 	void RemoveComponent(int ComponentID);
 
 	// 管理Actor的Transform
 	SceneComponent* RootComponent;
-	//MeshComponent* RootComponent;
-
-	// 相对Owner的局部变化
-
-
-
-
 
 	//*******************ID相关***********************
 	// Identifier
@@ -47,8 +26,6 @@ public:
 	static int IDNum;
 	// 输出ID
 	void PrintID();
-
-
 
 	//******************世界逻辑相关
 	// BeginPlay函数，游戏世界开始时调用
@@ -60,8 +37,16 @@ public:
 
 	// 渲染相关
 
+	// 子类实现，调用需要渲染的组件来进行渲染
+	virtual void InitResource(ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3dDeviceContext);
 	virtual void Render();
 
+
+
+
+
+protected:
+	
 
 
 	

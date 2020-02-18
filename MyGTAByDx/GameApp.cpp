@@ -6,6 +6,9 @@
 #include "BasicShape.h"
 #include "Actor.h"
 #include "MeshComponent.h"
+#include "InputManager.h"
+#include "TextureLoader.h"
+#include "Car.h"
 
 
 const D3D11_INPUT_ELEMENT_DESC VertexPosNormalTex::inputLayout[3] = {
@@ -37,6 +40,19 @@ bool GameApp::Init()
 	{
 		return false;
 	}
+	//输入管理模块
+	m_InputManager = new InputManager();
+	if (!m_InputManager->Init(m_hAppInst, m_hMainWnd)) {
+		return false;
+	}
+
+	//纹理读取模块
+	m_TextureLoader = new TextureLoader();
+
+	if (!m_TextureLoader->Init(m_pd3dDevice.Get()))
+	{
+		return false;
+	}
 
 	if (!InitShader())
 	{
@@ -50,6 +66,11 @@ bool GameApp::Init()
 	{
 		return false;
 	}
+
+
+
+
+
 	return true;
 }
 
@@ -60,8 +81,25 @@ void GameApp::SetRenderPipeLine()
 
 void GameApp::UpdateScene(float dt)
 {
+	m_InputManager->GetInput();  
+	//Car->MoveRight(0);
+	if (m_InputManager->IsKeyDown(DIK_A))
+	{
+		MyCar->MoveRight(-1);
+	}
+	if (m_InputManager->IsKeyDown(DIK_D)) {
+		MyCar->MoveRight(1);
+	}
+	if (m_InputManager->IsKeyDown(DIK_W))
+	{
+		MyCar->MoveForward(1);
+	}
+	if (m_InputManager->IsKeyDown(DIK_S)) {
+		MyCar->MoveForward(-1);
+	}
 
-	Car->Tick(dt);
+	MyCar->Tick(dt);
+	Ground->Tick(dt);
 	
 }
 
@@ -75,7 +113,8 @@ void GameApp::DrawScene()
 	m_pd3dDeviceContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 	//m_pd3dDeviceContext->DrawIndexed(Cube->m_IndexCount, 0,0);
-	Car->Render();
+	MyCar->Render();
+	Ground->Render();
 	HR(m_pSwapChain->Present(0, 0));
 
 }
@@ -105,19 +144,34 @@ bool GameApp::InitResource()
 	using namespace DirectX;
 
 	//初始化小车
-	
-	Car = new Actor();
-	MeshComponent* CarBody = new MeshComponent();
-	CarBody->LocalMatrix = XMMatrixTranslation(2.f, 0.f, 0.f);
-	MeshComponent* CarBody2 = new MeshComponent();
-	CarBody2->LocalMatrix = XMMatrixTranslation(-2.f, 0.f, 0.f);
-	//SceneComponent* CarBody = new SceneComponent();
+	//
+	//Car = new Actor();
+	//MeshComponent* CarBody = new MeshComponent();
+	//CarBody->LocalMatrix = XMMatrixTranslation(2.f, 0.f, 0.f);
+	//MeshComponent* CarBody2 = new MeshComponent();
+	//CylinderShape* tmp=new CylinderShape();
+	//CarBody2->SetShape(tmp);
+	//CarBody2->SetTexture(m_TextureLoader->LoadErrorTexture().Get());
+	//CarBody2->LocalMatrix = XMMatrixTranslation(-2.f, 0.f, 0.f);
+	////SceneComponent* CarBody = new SceneComponent();
 
-	Car->AddComponent(CarBody);
-	Car->AddComponent(CarBody2);
-	CarBody->InitResource(m_pd3dDevice.Get(), m_pd3dDeviceContext.Get());
-	CarBody2->InitResource(m_pd3dDevice.Get(), m_pd3dDeviceContext.Get());
+	//Car->AddComponent(CarBody);
+	//Car->AddComponent(CarBody2);
+	//CarBody->InitResource(m_pd3dDevice.Get(), m_pd3dDeviceContext.Get());
+	//CarBody2->InitResource(m_pd3dDevice.Get(), m_pd3dDeviceContext.Get());
 
+	MyCar = new Car();
+	MyCar->InitResource(m_pd3dDevice.Get(), m_pd3dDeviceContext.Get());
+
+
+	Ground = new Actor();
+	MeshComponent* GroundSurface = new MeshComponent();
+	Ground->AddComponent(GroundSurface);
+	CubeShape* GroundShape = new CubeShape(10.f, 1.f, 10.f);
+	GroundSurface->SetShape(GroundShape);
+	GroundSurface->LocalMatrix = XMMatrixTranslation(0.F, -10.F, 0.F);
+
+	GroundSurface->InitResource(m_pd3dDevice.Get(), m_pd3dDeviceContext.Get());
 
 
 

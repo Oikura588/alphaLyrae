@@ -28,14 +28,20 @@
     <Filter Include="EngineCore\Light">
       <UniqueIdentifier>{1f94b1d9-d770-49d4-9099-e56e389ea845}</UniqueIdentifier>
     </Filter>
-    <Filter Include="EngineCore\Shader">
-      <UniqueIdentifier>{4230a35c-0315-4eb2-a82c-228a25583ab9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="EngineCore\Material">
       <UniqueIdentifier>{128ebb9b-d3a0-4f60-95fd-28d68fcb53a0}</UniqueIdentifier>
     </Filter>
     <Filter Include="EngineCore\Camera">
       <UniqueIdentifier>{135d0327-bbfa-4790-bf76-5133d20eceb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EngineCore\InputModule">
+      <UniqueIdentifier>{2fc8663f-9762-437c-b74c-f4072391cfcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EngineCore\HLSL">
+      <UniqueIdentifier>{6898f6ac-3baa-4364-a12d-b6ddf87c2a82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EngineCore\ResourceModule">
+      <UniqueIdentifier>{1360b114-8172-4fe9-b79d-31f38f6ca72b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -96,6 +102,18 @@
     <ClInclude Include="Camera.h">
       <Filter>EngineCore\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>EngineCore\InputModule</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureLoader.h">
+      <Filter>EngineCore\ResourceModule</Filter>
+    </ClInclude>
+    <ClInclude Include="StringProcess.h">
+      <Filter>EngineCore\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Car.h">
+      <Filter>EngineLogic\Actor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Object.cpp">
@@ -129,7 +147,6 @@
     <ClCompile Include="GameApp.cpp">
       <Filter>EngineCore\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="DXUtil.cpp" />
     <ClCompile Include="BasicShape.cpp">
       <Filter>EngineCore\Geometry</Filter>
     </ClCompile>
@@ -142,19 +159,54 @@
     <ClCompile Include="Camera.cpp">
       <Filter>EngineCore\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>EngineCore\InputModule</Filter>
+    </ClCompile>
+    <ClCompile Include="DXUtil.cpp">
+      <Filter>EngineCore\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureLoader.cpp">
+      <Filter>EngineCore\ResourceModule</Filter>
+    </ClCompile>
+    <ClCompile Include="StringProcess.cpp">
+      <Filter>EngineCore\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Car.cpp">
+      <Filter>EngineLogic\Actor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="HLSL\Triangle_VS.hlsl" />
-    <FxCompile Include="HLSL\Triangle_PS.hlsl" />
-    <FxCompile Include="HLSL\Light_VS.hlsl" />
-    <FxCompile Include="HLSL\Light_PS.hlsl" />
-    <FxCompile Include="HLSL\Basic_VS.hlsl" />
-    <FxCompile Include="HLSL\Basic_PS.hlsl" />
+    <FxCompile Include="HLSL\Basic_PS.hlsl">
+      <Filter>EngineCore\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\Basic_VS.hlsl">
+      <Filter>EngineCore\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\Light_PS.hlsl">
+      <Filter>EngineCore\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\Light_VS.hlsl">
+      <Filter>EngineCore\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\Triangle_PS.hlsl">
+      <Filter>EngineCore\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\Triangle_VS.hlsl">
+      <Filter>EngineCore\HLSL</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="HLSL\Triangle.hlsli" />
-    <None Include="HLSL\LightHelper.hlsli" />
-    <None Include="HLSL\Light.hlsli" />
-    <None Include="HLSL\Basic.hlsli" />
+    <None Include="HLSL\Basic.hlsli">
+      <Filter>EngineCore\HLSL</Filter>
+    </None>
+    <None Include="HLSL\Light.hlsli">
+      <Filter>EngineCore\HLSL</Filter>
+    </None>
+    <None Include="HLSL\LightHelper.hlsli">
+      <Filter>EngineCore\HLSL</Filter>
+    </None>
+    <None Include="HLSL\Triangle.hlsli">
+      <Filter>EngineCore\HLSL</Filter>
+    </None>
   </ItemGroup>
 </Project>

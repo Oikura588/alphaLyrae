@@ -50,6 +50,10 @@ void Actor::Tick(float DeltaSeconds)
 
 }
 
+void Actor::InitResource(ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3dDeviceContext)
+{
+}
+
 void Actor::Render()
 {
 	//初始化Components中的其他组件
@@ -66,6 +70,8 @@ void Actor::Render()
 
 	}
 }
+
+
 
 void Actor::PrintID()
 {

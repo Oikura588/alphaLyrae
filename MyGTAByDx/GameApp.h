@@ -104,6 +104,14 @@ public:
 
 	//class CubeShape* Cube;
 
-	class Actor* Car;												// 车辆Actor
+	class Car* MyCar;												// 车辆Actor
+	class Actor* Ground;											// 地面
+
+
+	//各个模块
+
+	class InputManager* m_InputManager;							//输入管理模块
+
+	class TextureLoader* m_TextureLoader;						//纹理读取模块
 };
 

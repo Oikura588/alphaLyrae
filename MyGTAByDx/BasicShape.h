@@ -13,13 +13,16 @@ public:
 	virtual ~BasicShape();
 
 	//加载纹理、网格等资源
-	virtual void InitResource(ID3D11Device* pd3dDevice,ID3D11DeviceContext* pd3dDeviceContext)=0;
+	virtual void InitResource(ID3D11Device* pd3dDevice,ID3D11DeviceContext* pd3dDeviceContext);
 
+	//设置纹理
+
+	void SetTexture(ID3D11ShaderResourceView* pTexture=nullptr);
 
 	//Draw时调用
-	virtual void Draw() = 0;
+	virtual void Draw();
 	//Update时调用
-	virtual void Update(float dt) = 0;
+	virtual void Update(float dt);
 
 
 	//网格数据
@@ -43,14 +46,34 @@ public:
 class CubeShape :public BasicShape {
 public:
 	CubeShape();
+	CubeShape(float width , float height , float depth );
+
 	~CubeShape();
 	
 
 	//加载纹理、网格等资源
 	void InitResource(ID3D11Device* pd3dDevice,  ID3D11DeviceContext* pd3dDeviceContext);
-	void Draw();
-	void Update(float dt);
 
+	float width;
+	float height;
+	float depth;
+
+
+};
+
+
+class CylinderShape : public BasicShape {
+public:
+	CylinderShape();
+	CylinderShape(float radius , float height , UINT );
+	~CylinderShape();
+
+	//加载纹理、网格等
+	void InitResource(ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3dDeviceContext);
+
+	float radius;
+	float height;
+	UINT slices;
 
 };
 

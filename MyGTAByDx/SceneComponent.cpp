@@ -36,28 +36,6 @@ void SceneComponent::SetLocalMatrix()
 	using namespace DirectX;
 	LocalMatrix =XMMatrixMultiply(XMMatrixTranslation(LocalTransform.Location.X, LocalTransform.Location.Y, LocalTransform.Location.Z),XMMatrixRotationRollPitchYaw(LocalTransform.Rotation.X, LocalTransform.Rotation.Y, LocalTransform.Rotation.Z));
 }
-//
-//void SceneComponent::BeginPlay()
-//{
-//	using namespace DirectX;
-//	ActorComponent::BeginPlay();
-//	//PrintTransform();
-//	//LocalMatrix = XMMatrixTranslation(10.f, 0.f, 0.f);
-//		//初始化Components中的其他组件
-//	for (auto com : Children) {
-//		std::cout << ID << "'s Components:";
-//		com->BeginPlay();
-//	}
-//
-//}
-//
-//void SceneComponent::Tick(float dt)
-//{
-//	for (auto com : Children) {
-//		//std::cout << ID << "'s Components:";
-//		com->Tick(dt);
-//	}
-//
-//}
+
 
 

@@ -53,15 +53,6 @@ void MeshComponent::Update(float dt)
 	}
 	else {
 
-		using namespace DirectX;
-
-		//Ðý×ª
-		static float phi = 0.001f, theta = 0.0f;
-		//phi += 0.0001f, theta += 0.00015f;
-		XMMATRIX W = XMMatrixRotationX(phi);
-
-		//WorldMatrix = XMMatrixTranspose(W);
-		LocalMatrix =  W*LocalMatrix;
 		//LocalMatrix =  W;
 		m_pShape->m_WorldMatrix =XMMatrixTranspose( GetWorldMatrix());
 	}
@@ -71,3 +62,10 @@ void MeshComponent::SetShape(BasicShape* shape)
 {
 	m_pShape = shape;
 }
+
+void MeshComponent::SetTexture(ID3D11ShaderResourceView* pTexture)
+{
+	m_pShape->SetTexture(pTexture);
+}
+
+

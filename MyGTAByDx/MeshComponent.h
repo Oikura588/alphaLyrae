@@ -27,7 +27,12 @@ public:
 
 	// 设置形状
 	void SetShape(BasicShape* shape);
+
+
+	// 设置纹理（可运行时）
+	void SetTexture(ID3D11ShaderResourceView* pTexture = nullptr);
 protected:
 	//形状网格数据
 	BasicShape* m_pShape;
+
 };
