@@ -59,7 +59,7 @@ protected:
 	std::wstring m_MainWindowCaption;						//窗口标题
 	int m_ClientWidth;										//客户端高度
 	int m_ClientHeight;										//视口高度
-
+	bool m_bLocKMouse;										//窗口激活时锁定鼠标
 
 protected:
 	bool InitMainWindow();									//主窗口初始化

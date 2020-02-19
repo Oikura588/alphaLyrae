@@ -115,7 +115,7 @@ bool InputManager::InitDirectInput(HINSTANCE hInstance, HWND hMainWndHandle)
 	DWORD keyboardCoopFlags = DISCL_FOREGROUND | DISCL_NONEXCLUSIVE;
 	DWORD mouseCoopFlags = DISCL_FOREGROUND | DISCL_NONEXCLUSIVE;
 
-
+	
 	HR(DirectInput8Create(hInstance, 0x800, IID_IDirectInput8, (void**)(m_pDirectInput.GetAddressOf()), NULL));
 
 

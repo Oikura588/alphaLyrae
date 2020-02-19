@@ -30,6 +30,7 @@ D3DApp::D3DApp(HINSTANCE hInstance)
 	,m_pDepthStencilBuffer(nullptr)
 	,m_pRenderTargetView(nullptr)
 	,m_pDepthStencilView(nullptr)
+	,m_bLocKMouse(false)
 {
 	ZeroMemory(&m_ScreenViewport, sizeof(D3D11_VIEWPORT));
 
@@ -178,6 +179,24 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	
 	switch (msg)
 	{
+	case WM_ACTIVATE:
+	{
+		// test if window is being activated 
+		if (LOWORD(wParam) != WA_INACTIVE)
+		{
+			// application is being activated 
+			m_bLocKMouse = true;
+			//SetCursorPos(m_ClientWidth / 2, m_ClientHeight / 2);
+		}
+		else
+		{
+			m_bLocKMouse = false;
+			// application is being deactivated 
+		}
+	}
+	break;
+
+
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;

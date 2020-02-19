@@ -25,27 +25,28 @@ void Car::BeginPlay()
 
 void Car::Tick(float DeltaSeconds)
 {
-	Actor::Tick(DeltaSeconds);
-
 	using namespace DirectX;
 
-	//Ðý×ª
-	static float phi = 0.001f, theta = 0.0f;
-	//phi += 0.0001f, theta += 0.00015f;
-	XMMATRIX W = XMMatrixRotationY(phi);
+	Actor::Tick(DeltaSeconds);
 
-	//WorldMatrix = XMMatrixTranspose(W);
-	//LocalMatrix = W * LocalMatrix;
 
-	LFWheel->LocalMatrix = W * LFWheel->LocalMatrix;
-	
-	RFWheel->LocalMatrix = W * RFWheel->LocalMatrix;
+	////Ðý×ª
+	//static float phi = 0.001f, theta = 0.0f;
+	////phi += 0.0001f, theta += 0.00015f;
+	//XMMATRIX W = XMMatrixRotationY(phi);
 
-	
-	LBWheel->LocalMatrix = W * LBWheel->LocalMatrix;
+	////WorldMatrix = XMMatrixTranspose(W);
+	////LocalMatrix = W * LocalMatrix;
 
-	
-	RBWheel->LocalMatrix = W * RBWheel->LocalMatrix;
+	//LFWheel->LocalMatrix = W * LFWheel->LocalMatrix;
+	//
+	//RFWheel->LocalMatrix = W * RFWheel->LocalMatrix;
+
+	//
+	//LBWheel->LocalMatrix = W * LBWheel->LocalMatrix;
+
+	//
+	//RBWheel->LocalMatrix = W * RBWheel->LocalMatrix;
 
 }
 

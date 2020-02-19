@@ -8,17 +8,7 @@ MeshComponent::MeshComponent()
 MeshComponent::~MeshComponent()
 {
 }
-//
-//void MeshComponent::BeginPlay()
-//{
-//	PrimitiveComponent::BeginPlay();
-//
-//}
-//
-//void MeshComponent::Tick(float dt)
-//{
-//	PrimitiveComponent::Tick(dt);
-//}
+
 
 void MeshComponent::InitResource(ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3dDeviceContext)
 {

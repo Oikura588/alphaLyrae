@@ -37,5 +37,23 @@ void SceneComponent::SetLocalMatrix()
 	LocalMatrix =XMMatrixMultiply(XMMatrixTranslation(LocalTransform.Location.X, LocalTransform.Location.Y, LocalTransform.Location.Z),XMMatrixRotationRollPitchYaw(LocalTransform.Rotation.X, LocalTransform.Rotation.Y, LocalTransform.Rotation.Z));
 }
 
+void SceneComponent::UpdateWorldM()
+{
+	//如果有父组件
+	if (GetFatherSceneComponent())
+	{
+		WorldMatrix = DirectX::XMMatrixMultiply(LocalMatrix, FatherSceneComponent->GetWorldMatrix());
+	}
+	else {
+		WorldMatrix = LocalMatrix;
+	}
+}
+
+void SceneComponent::Tick(float dt)
+{
+	UpdateWorldM();
+	ActorComponent::Tick(dt);
+}
+
 
 

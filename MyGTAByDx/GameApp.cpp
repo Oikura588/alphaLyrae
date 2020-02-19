@@ -9,6 +9,7 @@
 #include "InputManager.h"
 #include "TextureLoader.h"
 #include "Car.h"
+#include "Camera.h"
 
 
 const D3D11_INPUT_ELEMENT_DESC VertexPosNormalTex::inputLayout[3] = {
@@ -62,12 +63,9 @@ bool GameApp::Init()
 	{
 		return false;
 	}
-	if (!InitPipeline())
-	{
-		return false;
-	}
 
 
+	ShowCursor(false);
 
 
 
@@ -81,6 +79,7 @@ void GameApp::SetRenderPipeLine()
 
 void GameApp::UpdateScene(float dt)
 {
+
 	m_InputManager->GetInput();  
 	//Car->MoveRight(0);
 	if (m_InputManager->IsKeyDown(DIK_A))
@@ -97,10 +96,49 @@ void GameApp::UpdateScene(float dt)
 	if (m_InputManager->IsKeyDown(DIK_S)) {
 		MyCar->MoveForward(-1);
 	}
+	
+	if (m_InputManager->IsKeyDown(DIK_O)) {
+		DfCamera->ChangeProjType();
+	}
 
+
+	// 处理相机的鼠标移动
+
+	LPRECT Tmp=new RECT();
+	GetWindowRect(m_hMainWnd, Tmp);
+	float CenterX = Tmp->left + m_ClientWidth / 2;
+
+	float CenterY = Tmp->top + m_ClientHeight / 2;
+
+	DfCamera->MouseX(m_InputManager->MouseDX());
+	DfCamera->MouseY(m_InputManager->MouseDY());
+
+	//如果窗口激活,每帧计算移动后将鼠标放到中心
+	if (m_bLocKMouse)
+	{
+		SetCursorPos(CenterX, CenterY);
+
+	}
+
+
+
+	//物品Tick
 	MyCar->Tick(dt);
 	Ground->Tick(dt);
 	
+	//设置相机与相机Tick()，设置相机这里可封装到Tick中，后续再做..
+	DirectX::XMFLOAT3 Pos;
+	Pos.x = MyCar->RootComponent->GetWorldPosition().x;
+	Pos.y = MyCar->RootComponent->GetWorldPosition().y+10.f;
+
+	Pos.z = MyCar->RootComponent->GetWorldPosition().z;
+
+
+	DfCamera->SetFocus(Pos);
+
+	//DfCamera->UpdateViewM();
+	DfCamera->Tick(dt);
+
 }
 
 void GameApp::DrawScene()
@@ -144,26 +182,12 @@ bool GameApp::InitResource()
 	using namespace DirectX;
 
 	//初始化小车
-	//
-	//Car = new Actor();
-	//MeshComponent* CarBody = new MeshComponent();
-	//CarBody->LocalMatrix = XMMatrixTranslation(2.f, 0.f, 0.f);
-	//MeshComponent* CarBody2 = new MeshComponent();
-	//CylinderShape* tmp=new CylinderShape();
-	//CarBody2->SetShape(tmp);
-	//CarBody2->SetTexture(m_TextureLoader->LoadErrorTexture().Get());
-	//CarBody2->LocalMatrix = XMMatrixTranslation(-2.f, 0.f, 0.f);
-	////SceneComponent* CarBody = new SceneComponent();
-
-	//Car->AddComponent(CarBody);
-	//Car->AddComponent(CarBody2);
-	//CarBody->InitResource(m_pd3dDevice.Get(), m_pd3dDeviceContext.Get());
-	//CarBody2->InitResource(m_pd3dDevice.Get(), m_pd3dDeviceContext.Get());
-
+	
 	MyCar = new Car();
 	MyCar->InitResource(m_pd3dDevice.Get(), m_pd3dDeviceContext.Get());
 
 
+	//初始化地面
 	Ground = new Actor();
 	MeshComponent* GroundSurface = new MeshComponent();
 	Ground->AddComponent(GroundSurface);
@@ -174,16 +198,18 @@ bool GameApp::InitResource()
 	GroundSurface->InitResource(m_pd3dDevice.Get(), m_pd3dDeviceContext.Get());
 
 
+	//初始化相机
 
-	// 相机设置的CB
+	DfCamera = new ThirdPersonCamera();
+	DfCamera->InitResource(m_pd3dDevice.Get(), m_pd3dDeviceContext.Get());
 
-	m_ConstantBufferForView.eyePos = XMFLOAT4(0.F, 0.F, -5.F, 0.F);
-	m_ConstantBufferForView.view=XMMatrixTranspose(XMMatrixLookAtLH(
-		XMVectorSet(0.0f, 0.0f, -5.0f, 0.0f),
-		XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
-		XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
-	));
-	m_ConstantBufferForProj.proj= XMMatrixTranspose(XMMatrixPerspectiveFovLH(XM_PIDIV2, AspectRatio(), 1.0f, 1000.0f));
+
+	
+
+
+
+
+	//m_ConstantBufferForProj.proj= XMMatrixTranspose(XMMatrixPerspectiveFovLH(XM_PIDIV2, AspectRatio(), 1.0f, 1000.0f));
 
 
 
@@ -200,7 +226,13 @@ bool GameApp::InitResource()
 
 
 
+	if (!InitPipeline()) {
+		return false;
+	}
 
+
+	//投影矩阵要在将常量缓冲区绑定到管线后才会能执行，但又不必每帧更新.
+	DfCamera->UpdateProjM();
 	return true;
 }
 

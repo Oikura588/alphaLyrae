@@ -61,47 +61,42 @@ public:
 	Transform LocalTransform;
 	DirectX::XMMATRIX LocalMatrix;
 
-
-	//// 返回在世界坐标中的Transform
-	//inline Transform& GetWorldTransform() { 
-	//	 
-	//	//如果有父组件
-	//	if (GetFatherSceneComponent())
-	//	{
-	//		Transform Tmp;
-	//		Tmp.Location = FatherSceneComponent->WorldTransform.Location + LocalTransform.Location;
-
-	//	}
-	//	else {
-	//		return WorldTransform;
-	//	}
-
-	//
-	//
-	//};
 	// 根据Transform设置LocalMatrix
 	void SetLocalMatrix();
 
 
+	//  根据组件关系更新世界矩阵
+	void UpdateWorldM();
+
+
 	// 返回WorldMatrix
 	DirectX::XMMATRIX& GetWorldMatrix() {
-		//如果有父组件
-		if (GetFatherSceneComponent())
-		{
-			WorldMatrix = DirectX::XMMatrixMultiply(LocalMatrix, FatherSceneComponent->GetWorldMatrix());
-		}
-		else {
-			WorldMatrix = LocalMatrix;
-		}
+		
 		return WorldMatrix;
 	}
+
+
+	// 返回世界位置
+
+	DirectX::XMFLOAT3& GetWorldPosition() {
+		
+		DirectX::XMFLOAT3 Pos;
+		Pos.x = WorldMatrix.r[3].m128_f32[0];
+		Pos.y = WorldMatrix.r[3].m128_f32[1];
+
+		Pos.z = WorldMatrix.r[3].m128_f32[2];
+
+		return Pos;
+
+	}
+
 
 	inline void PrintTransform() { WorldTransform.Print(); };
 
 
 
 	//virtual void BeginPlay() override;
-	//virtual void Tick(float dt) override;
+	virtual void Tick(float dt);
 
 
 };

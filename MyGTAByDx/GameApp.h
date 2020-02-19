@@ -108,6 +108,12 @@ public:
 	class Actor* Ground;											// 地面
 
 
+	//场景中的相机
+	bool m_bUseDfCamera;											//是否使用默认相机
+	class ThirdPersonCamera* DfCamera;									//默认相机
+
+
+
 	//各个模块
 
 	class InputManager* m_InputManager;							//输入管理模块
