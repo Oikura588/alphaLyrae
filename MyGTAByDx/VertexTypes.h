@@ -21,6 +21,12 @@ struct VertexPosNormalColor {
 
 };
 
+struct VertexPos {
+	DirectX::XMFLOAT3 pos;
+	static const D3D11_INPUT_ELEMENT_DESC inputLayout[1];
+
+};
+
 // 场景变换用到的buffer
 // 每个场景中的物体更新时会变化
 struct ConstantBufferForScene {
@@ -49,4 +55,12 @@ struct ConstantBufferForLit {
 	DirectionalLight dirLight;
 	Material material;
 
+};
+
+
+// 天空盒管线用到的
+
+struct ConstantBufferMVP {
+	DirectX::XMMATRIX mvp;
+	
 };

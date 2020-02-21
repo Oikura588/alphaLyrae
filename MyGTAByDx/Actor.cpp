@@ -56,7 +56,7 @@ void Actor::InitResource(ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3dDevi
 
 void Actor::Render()
 {
-	//初始化Components中的其他组件
+	//绘制PrimitiveComponent.
 	if (RootComponent)
 	{
 		for (auto com : RootComponent->Children)

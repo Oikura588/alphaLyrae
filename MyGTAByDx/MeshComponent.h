@@ -26,13 +26,21 @@ public:
 
 
 	// 设置形状
-	void SetShape(BasicShape* shape);
+	void SetShape(BasicShapeWithPosNormalTex* shape);
 
 
 	// 设置纹理（可运行时）
 	void SetTexture(ID3D11ShaderResourceView* pTexture = nullptr);
+
+
+
+	// 设置Material
+
+	void SetMaterial();
+	
+
 protected:
 	//形状网格数据
-	BasicShape* m_pShape;
+	BasicShapeWithPosNormalTex* m_pShape;
 
 };

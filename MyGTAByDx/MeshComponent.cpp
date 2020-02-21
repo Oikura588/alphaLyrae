@@ -48,7 +48,7 @@ void MeshComponent::Update(float dt)
 	}
 }
 
-void MeshComponent::SetShape(BasicShape* shape)
+void MeshComponent::SetShape(BasicShapeWithPosNormalTex* shape)
 {
 	m_pShape = shape;
 }
@@ -56,6 +56,10 @@ void MeshComponent::SetShape(BasicShape* shape)
 void MeshComponent::SetTexture(ID3D11ShaderResourceView* pTexture)
 {
 	m_pShape->SetTexture(pTexture);
+}
+
+void MeshComponent::SetMaterial()
+{
 }
 
 

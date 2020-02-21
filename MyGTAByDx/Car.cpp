@@ -54,7 +54,7 @@ void Car::InitResource(ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3dDevice
 {
 
 	TextureLoader* m_TextureLoader = new TextureLoader();
-	m_TextureLoader->Init(pd3dDevice);
+	m_TextureLoader->Init(pd3dDevice,pd3dDeviceContext);
 
 
 	CubeShape* BodyShape = new CubeShape(3, 3, 5);
@@ -67,13 +67,13 @@ void Car::InitResource(ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3dDevice
 	CylinderShape* tmp = new CylinderShape();
 
 	LFWheel->SetShape(tmp);
-	LFWheel->SetTexture(m_TextureLoader->LoadErrorTexture().Get());
+	LFWheel->SetTexture(m_TextureLoader->LoadDefaultTexture().Get());
 	LFWheel->LocalMatrix = XMMatrixRotationZ(XMConvertToRadians(90));;
 	LFWheel->LocalMatrix = LFWheel->LocalMatrix * XMMatrixTranslation(-3.f, -3.f, 3.f);
 	CylinderShape* tmp2 = new CylinderShape();
 
 	RFWheel->SetShape(tmp2);
-	RFWheel->SetTexture(m_TextureLoader->LoadErrorTexture().Get());
+	RFWheel->SetTexture(m_TextureLoader->LoadDefaultTexture().Get());
 	RFWheel->LocalMatrix =  XMMatrixRotationZ(XMConvertToRadians(90));
 	RFWheel->LocalMatrix = RFWheel->LocalMatrix* XMMatrixTranslation(3.f, -3.f, 3.f);
 
@@ -106,6 +106,9 @@ void Car::InitResource(ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3dDevice
 	LBWheel->InitResource(pd3dDevice, pd3dDeviceContext);
 
 	RBWheel->InitResource(pd3dDevice, pd3dDeviceContext);
+
+	delete(m_TextureLoader);
+	m_TextureLoader = nullptr;
 }
 
 void Car::MoveForward(float v)

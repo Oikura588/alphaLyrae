@@ -143,7 +143,7 @@ namespace Geometry {
 			vertexDataArr[i * 4 + 3].tex = XMFLOAT2(1.0f, 1.0f);
 		}
 
-		//将结果保存到meshData.vertexVec中
+		//将结果保存到meshData.vertexVector中
 		for (UINT i = 0; i < 24; ++i)
 		{
 			Internal::InsertVertexElement(meshData.vertexVector[i], vertexDataArr[i]);
@@ -289,5 +289,103 @@ namespace Geometry {
 
 		return meshData;
 	}
+
+
+	// 创建球体网格数据，levels和slices越大，精度越高。
+	template<class VertexType = VertexPosNormalTex>
+	MeshData<VertexType> CreateSphere(float radius = 1.0f, UINT levels = 20, UINT slices = 20,
+		const DirectX::XMFLOAT4& color = { 1.0f, 1.0f, 1.0f, 1.0f }) {
+		using namespace DirectX;
+
+		MeshData<VertexType> meshData;
+		UINT vertexCount = 2 + (levels - 1) * (slices + 1);
+		UINT indexCount = 6 * (levels - 1) * slices;
+		meshData.vertexVector.resize(vertexCount);
+
+		meshData.indexVector.resize(indexCount);
+
+		Internal::VertexData vertexData;
+		DWORD vIndex = 0, iIndex = 0;
+
+		float phi = 0.0f, theta = 0.0f;
+		float per_phi = XM_PI / levels;
+		float per_theta = XM_2PI / slices;
+		float x, y, z;
+
+		// 放入顶端点
+		vertexData = { XMFLOAT3(0.0f, radius, 0.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), color, XMFLOAT2(0.0f, 0.0f) };
+		Internal::InsertVertexElement(meshData.vertexVector[vIndex++], vertexData);
+
+		for (UINT i = 1; i < levels; ++i)
+		{
+			phi = per_phi * i;
+			// 需要slices + 1个顶点是因为 起点和终点需为同一点，但纹理坐标值不一致
+			for (UINT j = 0; j <= slices; ++j)
+			{
+				theta = per_theta * j;
+				x = radius * sinf(phi) * cosf(theta);
+				y = radius * cosf(phi);
+				z = radius * sinf(phi) * sinf(theta);
+				// 计算出局部坐标、法向量、Tangent向量和纹理坐标
+				XMFLOAT3 pos = XMFLOAT3(x, y, z), normal;
+				XMStoreFloat3(&normal, XMVector3Normalize(XMLoadFloat3(&pos)));
+
+				vertexData = { pos, normal, XMFLOAT4(-sinf(theta), 0.0f, cosf(theta), 1.0f), color, XMFLOAT2(theta / XM_2PI, phi / XM_PI) };
+				Internal::InsertVertexElement(meshData.vertexVector[vIndex++], vertexData);
+			}
+		}
+
+		// 放入底端点
+		vertexData = { XMFLOAT3(0.0f, -radius, 0.0f), XMFLOAT3(0.0f, -1.0f, 0.0f),
+			XMFLOAT4(-1.0f, 0.0f, 0.0f, 1.0f), color, XMFLOAT2(0.0f, 1.0f) };
+		Internal::InsertVertexElement(meshData.vertexVector[vIndex++], vertexData);
+
+
+		// 放入索引
+		if (levels > 1)
+		{
+			for (UINT j = 1; j <= slices; ++j)
+			{
+				meshData.indexVector[iIndex++] = 0;
+				meshData.indexVector[iIndex++] = j % (slices + 1) + 1;
+				meshData.indexVector[iIndex++] = j;
+			}
+		}
+
+
+		for (UINT i = 1; i < levels - 1; ++i)
+		{
+			for (UINT j = 1; j <= slices; ++j)
+			{
+				meshData.indexVector[iIndex++] = (i - 1) * (slices + 1) + j;
+				meshData.indexVector[iIndex++] = (i - 1) * (slices + 1) + j % (slices + 1) + 1;
+				meshData.indexVector[iIndex++] = i * (slices + 1) + j % (slices + 1) + 1;
+
+				meshData.indexVector[iIndex++] = i * (slices + 1) + j % (slices + 1) + 1;
+				meshData.indexVector[iIndex++] = i * (slices + 1) + j;
+				meshData.indexVector[iIndex++] = (i - 1) * (slices + 1) + j;
+			}
+		}
+
+		// 逐渐放入索引
+		if (levels > 1)
+		{
+			for (UINT j = 1; j <= slices; ++j)
+			{
+				meshData.indexVector[iIndex++] = (levels - 2) * (slices + 1) + j;
+				meshData.indexVector[iIndex++] = (levels - 2) * (slices + 1) + j % (slices + 1) + 1;
+				meshData.indexVector[iIndex++] = (levels - 1) * (slices + 1) + 1;
+			}
+		}
+
+
+		return meshData;
+
+	
+	
+	};
+
+
+
 
 }

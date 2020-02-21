@@ -37,11 +37,11 @@
     <Filter Include="EngineCore\InputModule">
       <UniqueIdentifier>{2fc8663f-9762-437c-b74c-f4072391cfcf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="EngineCore\HLSL">
-      <UniqueIdentifier>{6898f6ac-3baa-4364-a12d-b6ddf87c2a82}</UniqueIdentifier>
-    </Filter>
     <Filter Include="EngineCore\ResourceModule">
       <UniqueIdentifier>{1360b114-8172-4fe9-b79d-31f38f6ca72b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EngineCore\Shader">
+      <UniqueIdentifier>{6898f6ac-3baa-4364-a12d-b6ddf87c2a82}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -114,6 +114,15 @@
     <ClInclude Include="Car.h">
       <Filter>EngineLogic\Actor</Filter>
     </ClInclude>
+    <ClInclude Include="PipeLine.h">
+      <Filter>EngineCore\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBox.h">
+      <Filter>EngineLogic\Actor</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBoxComponent.h">
+      <Filter>EngineLogic\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Object.cpp">
@@ -174,39 +183,42 @@
     <ClCompile Include="Car.cpp">
       <Filter>EngineLogic\Actor</Filter>
     </ClCompile>
+    <ClCompile Include="PipeLine.cpp">
+      <Filter>EngineCore\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexTypes.cpp">
+      <Filter>EngineCore\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBox.cpp">
+      <Filter>EngineLogic\Actor</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBoxComponent.cpp">
+      <Filter>EngineLogic\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Basic_PS.hlsl">
-      <Filter>EngineCore\HLSL</Filter>
+      <Filter>EngineCore\Shader</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\Basic_VS.hlsl">
-      <Filter>EngineCore\HLSL</Filter>
+      <Filter>EngineCore\Shader</Filter>
     </FxCompile>
-    <FxCompile Include="HLSL\Light_PS.hlsl">
-      <Filter>EngineCore\HLSL</Filter>
+    <FxCompile Include="HLSL\Sky_PS.hlsl">
+      <Filter>EngineCore\Shader</Filter>
     </FxCompile>
-    <FxCompile Include="HLSL\Light_VS.hlsl">
-      <Filter>EngineCore\HLSL</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\Triangle_PS.hlsl">
-      <Filter>EngineCore\HLSL</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\Triangle_VS.hlsl">
-      <Filter>EngineCore\HLSL</Filter>
+    <FxCompile Include="HLSL\Sky_VS.hlsl">
+      <Filter>EngineCore\Shader</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HLSL\Basic.hlsli">
-      <Filter>EngineCore\HLSL</Filter>
-    </None>
-    <None Include="HLSL\Light.hlsli">
-      <Filter>EngineCore\HLSL</Filter>
+      <Filter>EngineCore\Shader</Filter>
     </None>
     <None Include="HLSL\LightHelper.hlsli">
-      <Filter>EngineCore\HLSL</Filter>
+      <Filter>EngineCore\Shader</Filter>
     </None>
-    <None Include="HLSL\Triangle.hlsli">
-      <Filter>EngineCore\HLSL</Filter>
+    <None Include="HLSL\Sky.hlsli">
+      <Filter>EngineCore\Shader</Filter>
     </None>
   </ItemGroup>
 </Project>
