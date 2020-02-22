@@ -15,7 +15,7 @@ void SkyBoxComponent::InitResource(ID3D11Device* pd3dDevice, ID3D11DeviceContext
 	//如果没有设置形状，默认为cube
 	if (m_pShape == nullptr)
 	{
-		m_pShape = new SphereShapeWithPos();
+		m_pShape = new SphereShapeWithPos(100,20,20);
 		TextureLoader* m_TextureLoader = new TextureLoader();
 		m_TextureLoader->Init(pd3dDevice, pd3dDeviceContext);
 
@@ -51,9 +51,11 @@ void SkyBoxComponent::Update(float dt)
 	else {
 		//更新就是把矩阵传给Shape,Shape每次Draw时会更新给管线
 		//LocalMatrix =  W;
-		m_pShape->m_WorldMatrix =DirectX::XMMatrixTranspose(GetWorldMatrix());
-		m_pShape->m_ViewMatrix = DirectX::XMMatrixTranspose(m_ViewM);
-		m_pShape->m_ProjMatrix = DirectX::XMMatrixTranspose(m_ProM);
+		m_pShape->m_WorldMatrix =(GetWorldMatrix());
+
+	
+		m_pShape->m_ViewMatrix = (m_ViewM);
+		m_pShape->m_ProjMatrix = (m_ProM);
 
 
 	}

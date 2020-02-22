@@ -22,9 +22,13 @@ public:
 
 
 	// 每帧更新，把相机的矩阵传给SkyBox
-	void SetViewMAndProM(const DirectX::XMMATRIX& ViewM,const DirectX::XMMATRIX& ProM) {
+	void SetViewM(const DirectX::XMMATRIX& ViewM) {
 		m_ViewM = ViewM;
-		m_ProM = ProM;
+	}
+
+	// 设置相机后更新
+	void SetProM(const DirectX::XMMATRIX& ProjM) {
+		m_ProM = ProjM;
 	}
 protected:
 	//形状网格数据

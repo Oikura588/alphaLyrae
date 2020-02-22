@@ -38,7 +38,9 @@ public:
 
 
 	bool m_bUseDfCamera;											//是否使用默认相机
-	class ThirdPersonCamera* DfCamera;								//默认相机
+	//class ThirdPersonCamera* DfCamera;								//默认相机
+	class Camera* DfCamera;								//默认相机
+
 
 
 	// 天空盒

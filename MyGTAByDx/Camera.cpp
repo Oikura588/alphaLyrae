@@ -19,7 +19,7 @@ Camera::Camera()
 	//默认朝向原点
 	m_Focus = XMFLOAT3(0.F, 0.F, 0.F);
 
-	m_Aspect = 1;
+	m_Aspect = XM_PIDIV2;
 	m_Near = 1.0f;
 	m_Far = 1000.0f;
 
@@ -100,7 +100,35 @@ void Camera::UpdateViewM()
 
 	case EControType::LOCK:
 	{
-		m_View = XMMatrixLookAtLH(GetPositionVector(), XMLoadFloat3(&m_Focus), XMLoadFloat3(&m_Up));
+		//m_View = XMMatrixLookAtLH(GetPositionVector(), XMLoadFloat3(&m_Focus), XMLoadFloat3(&m_Up));
+		XMVECTOR R = XMLoadFloat3(&m_Right);
+		XMVECTOR U = XMLoadFloat3(&m_Up);
+		XMVECTOR L = XMLoadFloat3(&m_Forward);
+		XMVECTOR P = XMLoadFloat3(&m_Position);
+
+		// 保持摄像机的轴互为正交，且长度都为1
+		L = XMVector3Normalize(L);
+		U = XMVector3Normalize(XMVector3Cross(L, R));
+
+		// U, L已经正交化，需要计算对应叉乘得到R
+		R = XMVector3Cross(U, L);
+
+		// 填充观察矩阵
+		float x = -XMVectorGetX(XMVector3Dot(P, R));
+		float y = -XMVectorGetX(XMVector3Dot(P, U));
+		float z = -XMVectorGetX(XMVector3Dot(P, L));
+
+		XMStoreFloat3(&m_Right, R);
+		XMStoreFloat3(&m_Up, U);
+		XMStoreFloat3(&m_Forward, L);
+
+		m_View = {
+			m_Right.x, m_Up.x, m_Forward.x, 0.0f,
+			m_Right.y, m_Up.y, m_Forward.y, 0.0f,
+			m_Right.z, m_Up.z, m_Forward.z, 0.0f,
+			x, y, z, 1.0f
+		};
+
 		break;
 	}
 
@@ -231,7 +259,7 @@ DefaultCamera::DefaultCamera()
 
 void DefaultCamera::Tick(float dt)
 {
-	UpdateViewM();
+	//UpdateViewM();
 
 }
 
@@ -248,7 +276,7 @@ void FirstPersonCamera::MouseX(float v)
 	XMMATRIX R = XMMatrixRotationY(v);
 
 	XMStoreFloat3(&m_Right, XMVector3TransformNormal(XMLoadFloat3(&m_Right), R));
-	XMStoreFloat3(&m_Up, XMVector3TransformNormal(XMLoadFloat3(&m_Up), R));
+	//XMStoreFloat3(&m_Up, XMVector3TransformNormal(XMLoadFloat3(&m_Up), R));
 	XMStoreFloat3(&m_Forward, XMVector3TransformNormal(XMLoadFloat3(&m_Forward), R));
 
 }
@@ -257,16 +285,34 @@ void FirstPersonCamera::MouseY(float v)
 {
 	v = v * m_Speed / 5000.f;
 	XMMATRIX R = XMMatrixRotationAxis(XMLoadFloat3(&m_Right), v);
-	XMVECTOR Up = XMVector3TransformNormal(XMLoadFloat3(&m_Up), R);
-	XMVECTOR Look = XMVector3TransformNormal(XMLoadFloat3(&m_Forward), R);
-	float cosPhi = XMVectorGetY(Look);
+	XMStoreFloat3(&m_Up, XMVector3TransformNormal(XMLoadFloat3(&m_Up), R));
+	XMStoreFloat3(&m_Forward, XMVector3TransformNormal(XMLoadFloat3(&m_Forward), R));
+
+	//XMVECTOR Up = XMVector3TransformNormal(XMLoadFloat3(&m_Up), R);
+	//XMVECTOR Look = XMVector3TransformNormal(XMLoadFloat3(&m_Forward), R);
+
+	float cosPhi = (m_Forward.y);
 	// 将上下视野角度Phi限制在[2pi/9, 7pi/9]，
 	// 即余弦值[-cos(2pi/9), cos(2pi/9)]之间
 	if (fabs(cosPhi) > cosf(XM_2PI / 9))
 		return;
 
-	XMStoreFloat3(&m_Up, Up);
-	XMStoreFloat3(&m_Forward, Look);
+	//XMStoreFloat3(&m_Up, Up);
+	//XMStoreFloat3(&m_Forward, Look);
+
+
+
+	//XMMATRIX R = XMMatrixRotationAxis(XMLoadFloat3(&m_Right), v);
+	//XMVECTOR Up = XMVector3TransformNormal(XMLoadFloat3(&m_Up), R);
+	//XMVECTOR Look = XMVector3TransformNormal(XMLoadFloat3(&m_Forward), R);
+	//float cosPhi = XMVectorGetY(Look);
+	//// 将上下视野角度Phi限制在[2pi/9, 7pi/9]，
+	//// 即余弦值[-cos(2pi/9), cos(2pi/9)]之间
+	//if (fabs(cosPhi) > cosf(XM_2PI / 9))
+	//	return;
+
+	//XMStoreFloat3(&m_Up, Up);
+	//XMStoreFloat3(&m_Forward, Look);
 }
 
 void FirstPersonCamera::Tick(float dt)
@@ -322,18 +368,18 @@ void ThirdPersonCamera::MouseZ(float v)
 
 void ThirdPersonCamera::Tick(float dt)
 {
-
-	UpdateViewM();
-
-}
-
-void ThirdPersonCamera::UpdateViewM()
-{
 	// 球面坐标系
 	float x = m_Focus.x + m_ArmLength * sinf(m_Phi) * cosf(m_Theta);
 	float z = m_Focus.z + m_ArmLength * sinf(m_Phi) * sinf(m_Theta);
 	float y = m_Focus.y + m_ArmLength * cosf(m_Phi);
 	m_Position = { x, y, z };
+	//UpdateViewM();
+
+}
+
+void ThirdPersonCamera::UpdateViewM()
+{
+	
 	XMVECTOR P = XMLoadFloat3(&m_Position);
 	XMVECTOR F = XMVector3Normalize(XMLoadFloat3(&m_Focus) - P);
 	XMVECTOR R = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), F));

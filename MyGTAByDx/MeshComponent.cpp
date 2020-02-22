@@ -44,7 +44,7 @@ void MeshComponent::Update(float dt)
 	else {
 
 		//LocalMatrix =  W;
-		m_pShape->m_WorldMatrix =XMMatrixTranspose( GetWorldMatrix());
+		m_pShape->m_WorldMatrix =( GetWorldMatrix());
 	}
 }
 

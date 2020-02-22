@@ -18,7 +18,8 @@ public:
 	virtual void BeginPlay();
 	virtual void Tick(float dt);
 
-
+	//方便Rnder的逻辑判断，实际只有需要渲染的才实现绘制逻辑。
+	virtual void Draw();
 	// Owner
 	bool bHasOwner;
 	ActorComponent* Owner;

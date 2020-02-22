@@ -105,9 +105,11 @@ void GameApp::UpdateScene(float dt)
 	float CenterX = Tmp->left + m_ClientWidth / 2;
 	float CenterY = Tmp->top + m_ClientHeight / 2;
 
-	DfCamera->MouseX(m_InputManager->MouseDX());
-	DfCamera->MouseY(m_InputManager->MouseDY());
 
+	DfCamera->MouseX(m_InputManager->MouseDX());
+
+	DfCamera->MouseY(m_InputManager->MouseDY());
+	DfCamera->MouseZ(m_InputManager->MouseDZ());
 
 
 	//如果窗口激活,每帧计算移动后将鼠标放到中心
@@ -119,19 +121,16 @@ void GameApp::UpdateScene(float dt)
 
 	//场景Tick.
 	MyCar->Tick(dt);
-	//Ground->Tick(dt);
 	
 	//设置相机与相机Tick()，设置相机这里可封装到Tick中，后续再做..
 	DirectX::XMFLOAT3 Pos;
 	Pos.x = MyCar->RootComponent->GetWorldPosition().x;
-	Pos.y = MyCar->RootComponent->GetWorldPosition().y+10.f;
-
+	Pos.y = MyCar->RootComponent->GetWorldPosition().y+5.f;
 	Pos.z = MyCar->RootComponent->GetWorldPosition().z;
 
 
 	DfCamera->SetFocus(Pos);
 
-	//DfCamera->UpdateViewM();
 	DfCamera->Tick(dt);
 
 
@@ -150,7 +149,9 @@ void GameApp::DrawScene()
 	m_pd3dDeviceContext->ClearRenderTargetView(m_pRenderTargetView.Get(), black);
 	m_pd3dDeviceContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-	//m_pd3dDeviceContext->DrawIndexed(Cube->m_IndexCount, 0,0);
+
+	DfCamera->UpdateViewM();
+
 
 	//每次绘制前设置相应的PipeLine状态
 	GOPipeline->SetPipeLine();
@@ -211,6 +212,8 @@ bool GameApp::InitResource()
 	//初始化相机
 
 	DfCamera = new ThirdPersonCamera();
+	//DfCamera = new FirstPersonCamera();
+
 	DfCamera->InitResource(m_pd3dDevice.Get(), m_pd3dDeviceContext.Get());
 
 
@@ -222,11 +225,12 @@ bool GameApp::InitResource()
 
 	//投影矩阵要在将相机的常量缓冲区绑定到管线后才会能执行，但又不必每帧更新.
 	DfCamera->UpdateProjM();
-
+	DfCamera->UpdateViewM();
 	//初始化天空盒,需要传入或手动一个相机进行跟随
 	MySkyBox = new SkyBox();
-	MySkyBox->InitResource(m_pd3dDevice.Get(), m_pd3dDeviceContext.Get());
 	MySkyBox->SetFollowCamera(DfCamera);
+	MySkyBox->InitResource(m_pd3dDevice.Get(), m_pd3dDeviceContext.Get());
+
 
 	//初始化天空盒管线
 	if (!SBPipeline->InitPipeLine()) {

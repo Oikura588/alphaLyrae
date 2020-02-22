@@ -66,8 +66,8 @@ void BasicShapeWithPosNormalTex::Draw()
 	m_pd3dDeviceContext->VSGetConstantBuffers(0, 1, &cBuffer);
 	ConstantBufferForScene cBForScene;
 
-	cBForScene.world = m_WorldMatrix;
-	cBForScene.worldInvTranspose = XMMatrixInverse(nullptr, cBForScene.world);
+	cBForScene.world =XMMatrixTranspose( m_WorldMatrix);
+	cBForScene.worldInvTranspose = XMMatrixTranspose( XMMatrixInverse(nullptr, cBForScene.world));
 
 	//// ...
 
@@ -275,10 +275,10 @@ void SphereShapeWithPos::Draw()
 
 	//获取已经绑定到管线上的常量缓冲区并进行更改
 	ComPtr<ID3D11Buffer> cBuffer = nullptr;
-	m_pd3dDeviceContext->VSGetConstantBuffers(0, 1, &cBuffer);
+	m_pd3dDeviceContext->VSGetConstantBuffers(4, 1, &cBuffer);
 	ConstantBufferMVP cBForMVP;
 
-	cBForMVP.mvp = DirectX::XMMatrixTranspose(m_WorldMatrix* m_ViewMatrix*m_ProjMatrix);
+	cBForMVP.mvp =DirectX::XMMatrixTranspose (m_WorldMatrix* m_ViewMatrix* m_ProjMatrix);
 
 	// 更新常量缓冲区
 	D3D11_MAPPED_SUBRESOURCE mappedData;

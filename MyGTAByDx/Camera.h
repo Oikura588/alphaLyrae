@@ -77,6 +77,24 @@ public:
 
 	void UpdateProjToPipeLine();
 
+	// 键盘移动，由子类实现具体逻辑.因为相机绑定在车子上，所以先不实现
+	virtual void KeyboardMoveForward(float v);
+	virtual void KeyboardMoveRight(float v);
+
+
+
+	// 鼠标移动，由子类实现具体逻辑（第一人称和第三人称不同）
+
+	// 鼠标横向移动v
+	virtual void MouseX(float v);
+
+	// 鼠标竖向移动v
+	virtual void MouseY(float v);
+
+	// 鼠标滚轮移动
+
+	virtual void MouseZ(float v);
+
 protected:
 
 	//相机的ID,每个id唯一
@@ -130,24 +148,6 @@ protected:
 	// 当前视口
 	D3D11_VIEWPORT m_ViewPort;
 
-
-	// 键盘移动，由子类实现具体逻辑.因为相机绑定在车子上，所以先不实现
-	virtual void KeyboardMoveForward(float v);
-	virtual void KeyboardMoveRight(float v);
-
-
-
-	// 鼠标移动，由子类实现具体逻辑（第一人称和第三人称不同）
-
-	// 鼠标横向移动v
-	virtual void MouseX(float v);
-
-	// 鼠标竖向移动v
-	virtual void MouseY(float v);
-
-	// 鼠标滚轮移动
-
-	virtual void MouseZ(float v);
 
 
 	// 鼠标移动速度

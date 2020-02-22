@@ -89,7 +89,12 @@ bool GameObjectPipeLine::InitPipeLine()
 
 	
 
+	m_pd3dDeviceContext->VSSetConstantBuffers(0, 1, m_pConstantBuffers[0].GetAddressOf());
 
+	m_pd3dDeviceContext->VSSetConstantBuffers(1, 1, m_pConstantBuffers[1].GetAddressOf());
+	m_pd3dDeviceContext->VSSetConstantBuffers(2, 1, m_pConstantBuffers[2].GetAddressOf());
+//	m_pd3dDeviceContext->PSSetConstantBuffers(1, 1, m_pConstantBuffers[3].GetAddressOf());
+	m_pd3dDeviceContext->PSSetConstantBuffers(3, 1, m_pConstantBuffers[3].GetAddressOf());
 
 
 
@@ -134,13 +139,9 @@ void GameObjectPipeLine::SetPipeLine()
 
 	//VS論僇
 	m_pd3dDeviceContext->VSSetShader(m_pVertexShader.Get(), nullptr, 0);
-	m_pd3dDeviceContext->VSSetConstantBuffers(0, 1, m_pConstantBuffers[0].GetAddressOf());
 
 	//PS論僇
-	m_pd3dDeviceContext->VSSetConstantBuffers(1, 1, m_pConstantBuffers[1].GetAddressOf());
-	m_pd3dDeviceContext->VSSetConstantBuffers(2, 1, m_pConstantBuffers[2].GetAddressOf());
-
-	m_pd3dDeviceContext->PSSetConstantBuffers(3, 1, m_pConstantBuffers[3].GetAddressOf());
+	
 	m_pd3dDeviceContext->PSSetSamplers(0, 1, m_pSamplerState.GetAddressOf());
 
 	m_pd3dDeviceContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0);
@@ -246,7 +247,8 @@ bool SkyBoxPipeLine::InitPipeLine()
 
 
 
-
+	////VS論僇
+	m_pd3dDeviceContext->VSSetConstantBuffers(4, 1, m_pConstantBuffer.GetAddressOf());
 	SetPipeLine();
 	return true;
 
@@ -259,8 +261,7 @@ void SkyBoxPipeLine::SetPipeLine()
 	m_pd3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	m_pd3dDeviceContext->IASetInputLayout(m_pVertexInputLayout.Get());
 
-	////VS論僇
-	m_pd3dDeviceContext->VSSetConstantBuffers(0, 1, m_pConstantBuffer.GetAddressOf());
+
 	m_pd3dDeviceContext->VSSetShader(m_pVertexShader.Get(), nullptr, 0);
 
 

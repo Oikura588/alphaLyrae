@@ -61,11 +61,14 @@ void Actor::Render()
 	{
 		for (auto com : RootComponent->Children)
 		{
-			PrimitiveComponent* tmp = dynamic_cast<PrimitiveComponent*>(com);
-			if (tmp)
-			{
-				tmp->Draw();
-			}
+			//PrimitiveComponent* tmp = dynamic_cast<PrimitiveComponent*>(com);
+
+			//if (tmp)
+			//{
+			//	tmp->Draw();
+			//}
+
+			com->Draw();
 		}
 
 	}

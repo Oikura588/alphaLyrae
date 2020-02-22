@@ -3,7 +3,7 @@ SamplerState g_Sam : register(s0);
 
 
 
-cbuffer ConstantBufferMVP : register(b0)
+cbuffer ConstantBufferMVP : register(b4)
 {
 	matrix g_MVP;
 }

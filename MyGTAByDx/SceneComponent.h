@@ -69,6 +69,8 @@ public:
 	void UpdateWorldM();
 
 
+
+
 	// ·µ»ØWorldMatrix
 	DirectX::XMMATRIX& GetWorldMatrix() {
 		

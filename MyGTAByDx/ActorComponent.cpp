@@ -31,11 +31,26 @@ void ActorComponent::BeginPlay()
 
 void ActorComponent::Tick(float dt)
 {
-	//调用Children的BeginPlay
+	//调用Children的Tick
 	for (auto ch:Children)
 	{
 		std::cout << ID << "'s Children:";
 		ch->Tick(dt);
+	}
+}
+
+void ActorComponent::Draw()
+{
+	for (auto com : Children)
+	{
+		//PrimitiveComponent* tmp = dynamic_cast<PrimitiveComponent*>(com);
+
+		//if (tmp)
+		//{
+		//	tmp->Draw();
+		//}
+
+		com->Draw();
 	}
 }
 

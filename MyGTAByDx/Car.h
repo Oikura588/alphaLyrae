@@ -24,10 +24,24 @@ private:
 	MeshComponent* CarBody;
 
 	//四个轮子
+	SceneComponent* LFWheelAxis;
 	MeshComponent* LFWheel;
+	SceneComponent* RFWheelAxis;
 	MeshComponent* RFWheel;
+	SceneComponent* LBWheelAxis;
 	MeshComponent* LBWheel;
+	SceneComponent* RBWheelAxis;
 	MeshComponent* RBWheel;
+
+
+	// 四个轮子前进/后退的转动
+
+	void WheelMoveForwardRotate(float v);
+
+
+	// 前面两个轮子左右移动的转动
+	void WheelMoveRightRotate(float v);
+
 
 
 };
